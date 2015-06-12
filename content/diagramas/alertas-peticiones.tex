@@ -1,0 +1,48 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[auto]
+    \pgfdeclarelayer{bg}
+    \pgfsetlayers{bg,main}
+    \tikzstyle{block} = [draw, align=center,
+      minimum height=1cm, minimum width=2cm, inner sep=2mm]
+    
+    \begin{scope}[local bounding box=smartphones]
+    
+    \node at (0,0) (movil1) {\includegraphics[width=1cm]{images/smartphone}};
+    \node at (2,1) (movil2) {\includegraphics[width=1cm]{images/smartphone}};
+    \node at (-2,-1.5) (movil3) {\includegraphics[width=1cm]{images/smartphone}};
+    \node at (-1,-4) (movil4) {\includegraphics[width=1cm]{images/smartphone}};
+    \node at (0,4) (movil5) {\includegraphics[width=1cm]{images/smartphone}};
+    \node at (4,-3) (movil6) {\includegraphics[width=1cm]{images/smartphone}};
+    \node at (-4,1) (movil7) {\includegraphics[width=1cm]{images/smartphone}};
+    
+    \node at (2.5,4) (portatil) {\includegraphics[width=2cm]{images/laptop}};
+    
+    \end{scope}
+    
+    \draw[step=1cm,gray,very thin] (smartphones.south west) grid (smartphones.north east);
+    \begin{pgfonlayer}{bg}
+      \draw [fill=blue!30] (0,0) circle (3);
+    \end{pgfonlayer}
+    
+    \node [right=1 of smartphones.north east,anchor=north west] (faborez) {\includegraphics[width=4cm]{images/faborez-logo}};
+    \node [below=2 of faborez] (gcm) {\includegraphics[width=4cm]{images/gcm-logo}};
+    
+    \draw [-Stealth,ultra thick] (portatil) -- (faborez) node[midway,above] {\large 1};
+    \draw [-Stealth,ultra thick] (movil1) .. controls ($(movil1)+(1,2)$) .. (faborez) node[midway,above] {\large 1};
+    \draw [-Stealth,ultra thick] (faborez) -- (gcm) node[midway,right] {\large 2};
+    \draw [-Stealth,ultra thick] (gcm) -- (movil2) node[midway,above] {\large 3};
+    \draw [-Stealth,ultra thick] (gcm) -- (movil3) node[midway,above] {\large 3};
+    
+    \draw [Stealth-Stealth,thick] (-3,0) -- (movil1) node[midway,above] {dist. max.};
+    
+  \end{tikzpicture}
+  \caption{Envío de alertas a dispositivos cercanos}
+  \label{fig:alertas-peticiones}  
+\end{figure}
+
+\end{document}

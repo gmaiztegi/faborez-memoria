@@ -1,0 +1,96 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Objetivos del proyecto}
+\label{sec:objetivos}
+
+Habitualmente nos surgen necesidades, muchas de gran relevancia o urgencia, a las cuales dedicamos empeño para lograr una respuesta o solución. Otras son tan pequeñas que al no poder hacer nada de inmediato simplemente las ignoramos. En cualquiera de los dos casos, uno puede recurrir a las personas que tenga geográficamente cerca para pedirles un favor. Si no hay nadie cerca, se recurre a utilizar el teléfono móvil para contactar con contactos cercanos y conocidos. Al final, la necesidad puede haber sido satisfecha o no.
+
+No obstante, en todo momento se encuentran alrededor de cualquiera centenares de personas que no tienen por qué ser conocidas. Es probable que de entre todas ellas alguien pudiera habernos ayudado en la necesidad, pero sin embargo no existe ninguna forma fácil de dar con esta persona.
+
+La solución por lo tanto, debe tener como función principal el hacer llegar a las personas cercanas nuestra necesidad, y dar la opción para que estas personas pueden ofrecernos su ayuda, generando finalmente este intercambio.
+
+Este capítulo explica los objetivos del proyecto, describiendo el funcionamiento de Faborez mediante historias de usuario y después se detalla el alcance del proyecto junto con las exclusiones de éste.
+
+
+\section{Historias del usuario}
+\label{sec:antecedentes-problema}
+
+A continuación se describen dos historias de usuario como forma concreta de caracterizar el proyecto. Primero, el relato desde el punto de vista de un usuario con una necesidad y que realiza la petición, y finalmente el punto de vista del usuario que atiende a la necesidad del primero.
+
+\subsection{Petición del favor}
+
+\emph{Fulano} es estudiante de Grado en Psicología. Como estudiante de la citada titulación, no tiene gran necesidad de equipos electrónicos para su carrera, por lo que suele tomar prestada una calculadora cuando la necesita.
+
+Hoy, 20 de mayo, tiene el examen final de Estadística, de 1º. Sin embargo, 30 minutos antes del examen se da cuenta de que no ha pedido prestada previamente la calculadora que le hará falta.
+
+\emph{Fulano} entonces ejecuta Faborez, hace click en \enquote{Necesito} y escribe \enquote{una calculadora científica}. Hace click en \enquote{Enviar} y, 30 segundos más tarde, otra alerta se muestra indicando que \enquote{\emph{Mengano} está dispuesto a dejarte una}.
+
+10 minutos más tarde \emph{Mengano} se presenta en el lugar, calculadora en mano, para prestársela. Acuerdan devolvérsela tras acabar el examen. Una vez se marcha, \emph{Fulano} abre la aplicación y hace click en el botón \enquote{√} junto al nombre de \emph{Mengano}, mostrando su conformidad, y este recibe puntos en la aplicación.
+
+\subsection{Respuesta a la petición}
+\emph{Mengano} estudia Grado en Arquitectura Técnica en la Escuela Universitaria Politécnica de Donostia.
+
+Un 20 de mayo, mientras estudiaba para un examen, su móvil vibra, mostrando una alerta de Faborez. La alerta muestra que un tal \emph{Fulano} necesita una calculadora científica para un examen, que es en menos de 20 minutos. Como tiene tiempo libre, decide dejársela. Comienza una conversación con \emph{Fulano} a través de la aplicación, y tras un breve intercambio de mensajes, decide marchar hacia la Facultad de Psicología, a 10 minutos de su posición.
+
+Allí se encuentra a \emph{Fulano}, al cual le presta la calculadora, y a continuación vuele a sus estudios. Más tarde recibe una alerta en su móvil, diciendo que \emph{Fulano} ha quedado satisfecho con el favor y que algunos puntos se suman a su perfil.
+
+
+\section{Alcance del proyecto}
+
+El alcance del proyecto se divide en dos apartados. Por un lado, se describen las características del problema resuelto y por otro lado los detalles acerca de las aplicaciones desarrolladas. Estos han sido los aspectos del problema anteriormente mencionado a los que Faborez ha dado solución:
+
+\begin{itemize}
+  \item Los usuarios podrán realizar peticiones de favor a través de la aplicación, indicando un resumen, una descripción, una categoría y la caducidad de dicha petición.
+  \item El resto de usuarios podrán visualizar peticiones realizadas dentro de una distancia determinada y responder a estas con un mensaje. Si las peticiones no son respondidas, desaparecerán pasado el tiempo de caducidad.
+  \item Esta respuesta dará comienzo a un hilo de mensajes entre el autor de la petición y el de la respuesta, en el que eventualmente el autor de la petición podrá indicar como satisfactoria la ayuda prestada o borrar el hilo en caso contrario.
+  \item Un usuario podrá visualizar tanto su historial de peticiones como el de otros usuarios con los que se encuentre, pudiendo ver el estado de estas peticiones.
+  \item Los usuarios podrán reportar peticiones que consideren como uso abusivo o que estuvieran fuera de lugar, guardándose este reporte en el servidor para su posterior gestión.
+\end{itemize}
+
+El desarrollo de las aplicaciones creadas se ha realizado en base a los siguientes puntos:
+
+\begin{enumerate}
+
+  \item Existirán dos clientes: una aplicación web y un cliente nativo para dispositivos Android. Ambos clientes estarán accesibles de forma pública a través del dominio de Faborez\footnote{\url{http://faborez.net/}} y de Play Store, respectivamente.
+  
+  \item La aplicación web podrá visualizarse y utilizarse en cualquier navegador moderno compatible con las funcionalidades recogidas dentro del estándar \gls{html5}, incluyendo los navegadores de los teléfonos móviles.
+  
+  \item La aplicación Android podrá ejecutarse a partir de la versión 2.3.3 de este sistema operativo, que a fecha de finalización de esta memoria los dispositivos con esta versión suponen el 99~\% del total~\autocite{android-versions}. Será necesario también que los usuarios tengan activadas la conexión a Internet y la localización en todo momento para el correcto funcionamiento.
+  
+  \item Para este cliente, además, existirá un panel de ajustes que permitirá: cambiar el idioma de la interfaz entre euskara y castellano, cambiar los ajustes relativos a las notificaciones y establecer la caducidad predeterminada de las peticiones a realizar.
+  
+  \item El cliente Android mostrará notificaciones cuando se produzca una petición en la cercanía, se respondan peticiones propias o haya nuevos mensajes en un hilo de conversación abierto.
+  
+  \item Las implementaciones se realizarán dando prioridad a tecnologías ya conocidas y de las que se dispone de una experiencia previa positiva. De la misma forma, no se incurrirá en costes significativos durante la contratación de servicios.
+  
+  \item La autenticación de los usuarios se delega al servicio Google Plus, del cual se hará uso en ambos clientes. Igualmente, primando la homogeneidad de la tecnología utilizada, se utilizarán en la medida de lo posible tecnologías de este proveedor.
+
+\end{enumerate}
+
+
+\section{Exclusiones del proyecto}
+
+Se excluyen del alcance del proyecto los siguientes puntos:
+
+\begin{enumerate}
+
+  \item La petición de favores, generalmente relativos a servicios, independientes de la localización donde se realicen. Existen en Internet otros portales con este objetivo y que no tienen en cuenta la proximidad de los usuarios.
+
+  \item El análisis de carácter legal que resultaría necesario en una aplicación final. La aplicación realiza una importante recogida de datos personales (mensajes enviados y geolocalización) que se almacenan en el servidor. Esta recogida requiere de una consideración en las distintas consecuencias legales, sobre todo los relativos a la \gls{lopd} y la \gls{lssi}, lo cual sería materia suficiente para un Proyecto Fin de Carrera separado.
+    \item La labor de documentación y sistematización de la gestión del servidor de la aplicación. En el proyecto se pondrán en línea los sistemas esenciales para el funcionamiento de Faborez, pero no se profundizará en el análisis del rendimiento, disponibilidad o seguridad a nivel de sistema operativo.
+  
+  \item De la misma forma, se excluye la realización de un análisis exhaustivo de los costes y de las características de un servidor de pago, ya que se opta por una alternativa gratuita.
+  
+  \item El desarrollo de clientes distintos a web y Android.
+  
+  \item La adaptación de los clientes para su uso por personas con alguna discapacidad, como podría ser la petición de favores con el uso de la voz.
+  
+  \item La implementación de un módulo propio para la autenticación de los usuarios, que se ha delegado en un servicio externo.
+  
+  \item No se implementará un sistema para gestionar los reportes de uso indebido que los usuarios envíen. Los reportes, además, se limitarán a las peticiones y no podrán realizarse para usuarios o mensajes.
+
+\end{enumerate}
+
+\end{document}

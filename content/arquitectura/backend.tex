@@ -1,0 +1,155 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter[Servidor backend]{Servidor \gls{backend}}
+
+El servidor de Faborez es la pieza central del servicio: implementa la lógica de negocio al completo, almacena los datos de forma permanente y los clientes los obtienen de este.
+
+Como se ha explicado en el \cref{sec:tech-sails}, este servidor se encuentra implementado en \gls{sails}, por lo que sigue la estructura definida por este \gls{framework}, a saber:
+
+\begin{itemize}
+  \item La definición de los modelos, que describen sus atributos, la forma en la que se guardan en la base de datos y algunos métodos de ayuda para trabajar con sus datos.
+  \item Los controladores, en los cuales se implementa toda la lógica de negocio. Tratan las peticiones enviadas y devuelven los resultados en el formato adecuado (\gls{html} o \gls{json}).
+  \item Las plantillas, en formato \gls{ejs}, para enviar los resultados en formato \gls{html}.
+  \item Los distintos archivos de configuración, entre los cuales los más importantes son:
+  \begin{itemize}
+    \item Las políticas de acceso que definen la autenticación y la autorización requerida para ejecutar una acción de un controlador determinados.
+    \item Las rutas de acceso, que unen las distintas \gls{url} de la \gls{api} con su respectiva acción en un controlador.
+    \item La información relativa a las bases de datos \gls{mongodb}, que son su dirección y credenciales de acceso y \gls{redis}, con una configuración similar.
+    \item El \gls{hook} a través del cual \gls{sails} permite integrar \gls{middleware}, que en su caso se trata del sistema de autenticación.
+  \end{itemize}
+  \item En otra carpeta también se encuentran las librerías Javascript para la aplicación web que el navegador directamente descarga.
+  \item Utilidades para algunos de los casos de uso de la lógica de negocio, incluidos el envío de notificaciones con \gls{gcm} y tareas periódicas para la limpieza de la base de datos.
+\end{itemize}
+
+Este capítulo describe el modelo de los datos almacenados en el \gls{backend}, la lógica de negocio junto con su forma de estructuración y algunos detalles relativos a la configuración del servidor.
+
+\section{Modelo de datos}
+
+En la \cref{fig:backend-datamodel} se muestra diagrama de clases que el \gls{backend} de Faborez maneja. Cada uno de estos modelos se corresponde con una colección en la base de datos \gls{mongodb} (ver \cref{sec:tech-mongodb}). Las nueve clases que conforman el modelo son: \texttt{User}, \texttt{Request}, \texttt{Category}, \texttt{Report}, \texttt{Message}, \texttt{Device}, \texttt{Token} y \texttt{RefreshToken}.
+
+\begin{description}
+  \item[\texttt{User}] Representa a los usuarios de Faborez, que se identifican mediante su dirección de correo electrónico.
+  \item[\texttt{Request}] Es la petición de favor, que contiene título, descripción, coordenadas de geolocalización, las fechas de creación y caducidad, además de las referencias a la categoría y el usuario. Existe una referencia que puede ser nula, que es aquella que indica qué respuesta fue la que satisfizo a la petición, en su caso.
+  
+  El método \texttt{getStatus()} depende de este último aributo y de la fecha de caducidad, pudiendo devolver tres posibles valores (ver implementación en el \cref{lst:faborez-request-status}): resuelto, caducado o abierto.
+  
+  \item[\texttt{Category}] Representa a la categoría de las peticiones. Aunque los valores posibles se guarden en la base de datos, estos no cambian frecuentemente.
+  
+  \item[\texttt{Report}] Denuncia por abuso sobre una petición en concreto.
+  
+  \item[\texttt{Reply}] Hilo de conversación de respuesta perteneciente a una petición y a un grupo de ayudantes concreto. El atributo \texttt{deleted} marca como eliminada este hilo de respuesta, sin que realmente se borre de la base de datos.
+  
+  \item[\texttt{Message}] Cada uno de los mensajes del hilo de conversación. Contiene una referencia al usuario autor del mensaje y al \texttt{Reply} correspondiente.
+  
+  \item[\texttt{Device}] Identifica a los dispositivos móviles, por ahora solamente Android, registrados por cada usuario. Se guarda un identificador (\texttt{deviceId}) proporcionado por \gls{gcm} y la geolocalización enviada. Estos datos son utilizados para enviar las notificaciones de petición a las personas cercanas.
+  
+  \item[\texttt{Token} y \texttt{RefreshToken}] Son los \glspl{token} utilizados para la autenticación de los dispositivos móviles, tal y como indica el estándar OAuth~2.0~\autocite{oauthrfc}. Para ambos, se guarda la caducidad, el \gls{token} en sí y la referencia al usuario al que pertenecen.
+\end{description}
+
+\begin{listing}
+  \centering
+  \jsfile{codigo/faborez-request-status.js}
+  \caption{Método \texttt{getStatus()} de la clase \texttt{Request}}
+  \label{lst:faborez-request-status}
+\end{listing}
+
+\subfile{content/diagramas/backend-modelo-datos}
+
+\section{Lógica de negocio}
+
+La lógica de negocio del servidor de \gls{backend} se implementa en los \emph{controladores} de \gls{sails}. Los controladores están formados por acciones, que se agrupan según la clase de datos que tratan o su funcionalidad. Estas acciones, a su vez, van ligadas a una \gls{url} concreta.
+
+Estos controladores, según su naturaleza, pueden ser agrupados en tres categorías distintas:
+
+\begin{enumerate}
+  \item Los controladores de la \gls{api} \gls{rest}, en los que cada uno está vinculado a una clase de datos concreta, y provee acciones de creación, lectura, actualización y eliminación de los distintos objetos. La mayoría de los controladores se agrupan en esta  categoría, y su \gls{url} tiene el prefijo \texttt{/api/v1/}.
+  \item Controladores relativos a la seguridad, encargados de la creación de los usuarios y de su autenticación, ya sea con el sistema de Google o con los \glspl{token} que el propio sistema proporciona.
+  \item El controlador \texttt{FrontendController}, que contiene las rutas por las que se accede mediante la aplicación web. A diferencia del resto, este controlador siempre tiene como salida texto \gls{html}.
+\end{enumerate}
+
+En el \cref{tab:rutas} se muestran todas las acciones agrupadas por controlador, junto con sus rutas y el nivel de acceso requerido. Se encuentran en ella las acciones más relevantes, y se descartan las menos importantes, aún cuando estén implementadas.
+
+\begin{table}
+  \centering
+  \begin{tabulary}{\textwidth}{L L L J}
+    \toprule
+    \textbf{Ruta} & \textbf{Controlador} & \textbf{Acción} & \textbf{Acceso} \tabularnewline
+    \midrule
+    \texttt{GET /} & \multirow{6}{*}{FrontendController} & index & \multirow{6}{*}{Usuario} \tabularnewline
+    \texttt{GET /requests} & & requests & \tabularnewline
+    \texttt{GET /request/:id} & & request & \tabularnewline
+    \texttt{GET /messages/:id} & & messages & \tabularnewline
+    \texttt{GET /profile/:id} & & profile & \tabularnewline
+    \texttt{GET /profile/me} & & myProfile & \tabularnewline
+    \midrule
+    \texttt{GET /auth} & \multirow{4}{*}{AuthController} & index & \multirow{3}{*}{Público} \tabularnewline
+    \texttt{GET /google} & & google & \tabularnewline
+    \texttt{GET /google/callback} & & google/callback & \tabularnewline
+    \texttt{GET /logout} & & logout & Usuario \tabularnewline
+    \midrule
+    \texttt{GET /api/v1/user/:id?} & \multirow{2}{*}{AuthController} & find & \multirow{2}{*}{Usuario} \tabularnewline
+    \texttt{GET /api/v1/user/me} & & me & \tabularnewline
+    \midrule
+    \texttt{GET /api/v1/request/:id?} & \multirow{4}{*}{RequestController} & find & \multirow{4}{*}{Usuario} \tabularnewline
+    \texttt{POST /api/v1/request} & & create & \tabularnewline
+    \texttt{PUT /api/v1/request/:id} & & update & \tabularnewline
+    \texttt{DELETE /api/v1/request/:id} & & destroy & \tabularnewline
+    \midrule
+    \texttt{GET /api/v1/category/:id} & CategoryController & find & Usuario \tabularnewline
+    \midrule
+    \texttt{GET /api/v1/reply/:id?} & \multirow{4}{*}{ReplyController} & find & \multirow{4}{*}{Usuario} \tabularnewline
+    \texttt{POST /api/v1/reply} & & create & \tabularnewline
+    \texttt{DELETE /api/v1/reply/:id} & & destroy & \tabularnewline
+    \texttt{POST /api/v1/reply/:id/accept} & & accept & \tabularnewline
+    \midrule
+    \texttt{GET /api/v1/message/:id?} & \multirow{2}{*}{MessageController} & find & \multirow{2}{*}{Usuario} \tabularnewline
+    \texttt{POST /api/v1/message} & & create & \tabularnewline
+    \midrule
+    \texttt{GET /api/v1/report/:id?} & \multirow{2}{*}{ReportController} & find & Admin \tabularnewline
+    \texttt{POST /api/v1/report} & & create & Usuario \tabularnewline
+    \midrule
+    \texttt{POST /device/report} & DeviceController & report & Usuario \tabularnewline
+    \midrule
+    \texttt{GET /oauth/authorize} & \multirow{3}{*}{OauthController} & authorize & \multirow{3}{*}{Público} \tabularnewline
+    \texttt{POST /oauth/token} & & token & \tabularnewline
+    \texttt{POST /oauth/google} & & google & \tabularnewline
+    \bottomrule
+  \end{tabulary}
+  \caption{Las acciones y sus respectivas rutas}
+  \label{tab:rutas}
+\end{table}
+
+\section{Configuración del servidor}
+
+El trabajo de implementación se realiza íntegramente en el ordenador local, y es ahí donde es ejecutado en un principio para ser probado. Después es subido a \gls{heroku}, poniéndolo en producción. En el ordenador local, se utiliza la base de datos instalada en el propio ordenador, que aparte de contener datos distintos, los parámetros de conexión son distintos a los del servidor de producción.
+
+Resulta que surge un problema de configuración. Lamentablemente, \gls{heroku} no permite editar alguno de los archivos ya que se vale de \gls{git} y todo el código es desplegado en bloque.
+
+Por otro lado, una cuestión a tener en cuenta es que los parámetros de conexión del servidor de producción deben mantenerse privados, por lo que no deben estar presentes en el código al estar este visible en el servidor de control de versiones. De la misma forma, también es conveniente que los parámetros locales tampoco se encuentren en el repositorio, ya que puede haber distintos desarrolladores trabajando al mismo tiempo, con distintas configuraciones cada uno.
+
+Afortunadamente, es posible sortear ambos problemas con dos métodos: por un lado las variables de entorno, presentes en todos los sistemas operativos y sus programas, y por otro el fichero de configuración \texttt{local.js} que \gls{sails} habilita en su sistema de ficheros.
+
+\paragraph{\texttt{local.js}}
+Este fichero es el último de entre los archivos de configuración que \gls{sails} lee. Esto permite que sobreescriba cualquier valor definido en otro fichero. Posteriormente, se utiliza el archivo \texttt{.gitignore} para indicar que el archivo \texttt{local.js} no debe ir al repositorio de código.
+
+El \cref{lst:sails-local} muestra un ejemplo de este fichero de configuración, en el que se configura el servidor \gls{redis} para almacenar la sesión de los usuarios en el entorno local.
+
+\begin{listing}
+  \jsfile{codigo/sails-local.js}
+  \caption{Archivo de configuración \texttt{local.js}}
+  \label{lst:sails-local}
+\end{listing}
+
+\paragraph{Variables de entorno}
+\gls{heroku} permite utilizar variables de entorno en las que introducir los parámetros de configuración. Estos no se escriben en el código, si no que se acceden desde él. El \cref{lst:sails-environment-variables} es un ejemplo de la configuración de la base de datos, en el que utiliza la variable de entorno \texttt{MONGOHQ_URL}, si existe, y un valor por defecto si no está presente.
+
+\begin{listing}
+  \jsfile{codigo/sails-environment.js}
+  \caption{Configuración de la base de datos mediante variables de entorno}
+  \label{lst:sails-environment-variables}
+\end{listing}
+
+
+\end{document}

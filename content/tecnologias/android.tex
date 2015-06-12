@@ -1,0 +1,66 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\section{Elección de la plataforma de desarrollo móvil}
+\label{sec:tech-android}
+
+Una aplicación social como Faborez, basada en la inmediatez del acto de pedir un favor y de responder a estas peticiones, hace necesario que pueda ser utilizado desde el dispositivo que todo el mundo lleva encima en todo momento: el teléfono móvil. Sin embargo, el comienzo del desarrollo de una \gls{app} móvil plantea desde el inicio un dilema, si dicha aplicación debe ser desarrollada de forma nativa para cada plataforma o si desarrollar una sola aplicación que con pequeñas modificaciones sea compatible para la gran mayoría de ellas.
+
+\subsection{Aplicaciones nativas}
+
+Como es bien sabido, cada plataforma o sistema operativo que ha sido creado para su uso, ha traído consigo su propio entorno de programación, herramientas y metodologías distintas. Cada uno de estos ha seguido una filosofía distinta, dependiente mucho tanto de las características de los dispositivos para los cuales se realiza el desarrollo como de la estrategia comercial de las empresas que los lanzan.
+
+Para el caso de Android e iOS el ejemplo es claro. El desarrollo de las aplicaciones del primero se realiza mayormente en Java y se proporcionan las herramientas de compilación propias para varias plataformas de PC. En el caso del segundo, el lenguaje de programación principal es Objective-C, y el desarrollo se limita al sistema operativo de Apple, Mac OS~X.
+
+La principal ventaja de las aplicaciones nativas es su rendimiento, ya que al compilarse el código fuente a código objeto o \gls{bytecode}, no se necesita un programa intermedio para su ejecución. También posibilitan aprovechar al máximo las funcionalidades de los dispositivos y el sistema operativo.
+
+Sin embargo, como es obvio, se debe desarrollar una aplicación para cada una de las plataformas por separado, multiplicando el tiempo de desarrollo y sobre todo de aprendizaje. Además, se añade la complejidad de la gestión paralela de la evolución de la aplicación en los diferentes entornos.
+
+\subsection{Desarrollo móvil multiplataforma}
+
+La creación y popularización del estándar \gls{html5} ha supuesto un salto cualitativo en el mundo del desarrollo web. En el pasado el \gls{html} no pasaba de ser un lenguaje para describir el formato de un documento con el fin de que después fuera visualizado en un navegador. La interacción más pequeña con el usuario o con el sistema operativo requería utilizar tecnologías de terceros, como Adobe Flash, con algunas desventajas: tecnologías privativas y no estándares, no disponibles para todas las plataformas y/o navegadores, de rendimiento mejorable y que requerían un proceso de aprendizaje propio.
+
+La quinta versión de \gls{html} trajo, en un principio, pequeños añadidos que iban encaminados a eliminar la dependencia a estas tecnologías externas en usos de Internet ya popularizados entre todos los usuarios. El ejemplo sonado, sin duda,  fue la posibilidad de reproducir vídeos embebidos en la web sin necesidad de complementos.
+
+No obstante, este germen de estandarización rápidamente se contagió al mundo del desarrollo móvil. De expandir la funcionalidad de HTML se pasó a Javascript y las \glspl{api} que esta ofrecía. Lo que en un inicio solo permitía modificar la estructura del documento, comenzó a ofrecer las interfaces para todo tipo de funciones: geolocalización, almacenamiento permanente de datos, ejecución de páginas sin necesidad de conexión. Con estos estándares, y una creciente comunidad de desarrolladores, la combinación de \gls{html5} y JavaScript ya era suficiente para desarrollar casi cualquier aplicación.
+
+\subsubsection[Webapp]{\Glspl{webapp}}
+En este contexto de estandarización de la tecnología, la elección del desarrollo en \gls{html5} + Javascript es cada vez más la opción elegida por los desarrolladores~\autocite{ibaivalencia}. Incluso algunos sistemas operativos para dispositivos móviles han elegido directamente que todas las aplicaciones deban ser desarrollados de esta manera.
+
+La integración de una \gls{webapp} en un móvil es realmente sencilla: todo el código \gls{html} y Javascript es embebido en el paquete de la aplicación, y después se crea una pequeña parte de aplicación nativa que lo único que hace es embeber una ventana de navegador y ejecutar la \gls{webapp} en ella, de manera que esta obtiene un aspecto similar a una aplicación nativa.
+
+\subsubsection{Limitaciones}
+Con todo lo mencionado hasta este punto puede parecer que todo son ventajas del desarrollo multiplataforma respecto al nativo. Si algo está frenando su adopción para todas las aplicaciones son las limitaciones que todavía tiene en dos dimensiones: el rendimiento y la funcionalidad.
+
+Respecto a lo primero, con HTML ocurre como con cualquier otra comparativa entre lenguajes/\glspl{framework} de alto y bajo nivel. Cuanto mayor es el nivel de abstracción, en este caso llegando a no depender del sistema operativo, mayor es la cantidad de intermediarios que permitan su ejecución, reduciendo el rendimiento significativamente. Este problema, con el esfuerzo que se está poniendo en la optimización gracias a la popularidad del sistema, es cada vez menor.
+
+No obstante, el factor decisivo en la elección se encuentra en la funcionalidad ofertada, y si esta es capaz de abarcar todos los requerimientos que la aplicación en cuestión abarca. La interacción directa con el \emph{hardware} del dispositivo, la ejecución de tareas en segundo plano, la recepción de notificaciones \gls{push} del proveedor o la integración con características específicas de cada sistema operativo son algunas de ellas.
+
+\subsubsection{Tecnologías híbridas de ayuda}
+Existen algunas tecnologías que intentan cubrir parte de esas carencias, además de simplificar todavía más el desarrollo, creando de la parte específica de cada plataforma automáticamente, por ejemplo.
+
+El más popular del mercado en esta categoría es Cordova~\autocite{cordova} o su variante más conocida como Phonegap~\autocite{phonegap}. Con unos pocos comandos, realiza las labores de creación de la \gls{app} para las plataformas que se deseen, dando como resultado archivos redistribuibles finales.
+
+\subsection{La elección para Faborez}
+En un inicio, la apuesta que se realizó para Faborez fue la de aplicación multiplataforma. Las razones son las anteriormente mencionadas, y no se veía entonces ninguna restricción. El fin era, además, abrir la aplicación para más plataformas cuanto antes, por lo que este era un punto a favor. Por otro lado, el rendimiento no pasaba de un requisito deseable.
+
+No obstante, a medida que se desarrolló el primer prototipo, se recogió el \emph{feedback} de los primeros \emph{betatester}s y se completaron los casos de uso, se vio que las funcionalidades del entorno multiplataforma no eran suficientes. Las peticiones en Faborez deben ser inmediatas, notificando en un corto plazo de tiempo a los usuarios, y hacerlo a los usuarios cercanos.
+
+Las aplicaciones web solo se encuentran activas cuando están en primer plano, por lo que no es posible que reciban notificaciones del servidor no estando en ejecución, siendo imposible tener presente siempre la localización o realizar operaciones de red en ese momento.
+
+De la misma forma, las aplicaciones multiplataforma no realizan, para todas las plataformas, las notificaciones de la misma forma que lo hacen las nativas: se muestran unos recuadros de alerta mientras la aplicación está activa, y no mediante un icono en la barra de estado mientras no están activas, de la forma que es común.
+
+Por estas razones, se tomó la decisión de realizar la aplicación de forma nativa y no multiplataforma, con el coste de desarrollo y aprendizaje que ello supone.
+
+\subsubsection{Elección de Android}
+Dentro de las plataformas nativas de desarrollo, la elección ha sido la de Android. Las razones que han llevado a esta decisión han sido varias, a saber:
+
+\begin{itemize}
+  \item Android es el sistema operativo de móviles más vendido actualmente, con un 78,4~\% de cuota de mercado~\autocite{gartnerandroid}. En el caso de España, esa cifra sube al 90~\%~\autocite{androidbycountry}.
+  \item Los dispositivos con los que se contaba para el desarrollo y prueba son todos Android, tanto los propios como la gran mayoría de los de los \emph{betatester}s.
+  \item La primera opción alternativa a Android sería iOS, el cual tiene un coste anual de \USD{99} anuales para la distribución de la aplicación. El coste de Play Store es un pago único de \USD{25}.
+  \item Como software libre, el código fuente de Android se encuentra en disponible en Internet y pueden recogerse ideas del mismo.
+\end{itemize}
+
+\end{document}

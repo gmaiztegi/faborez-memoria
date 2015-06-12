@@ -1,0 +1,121 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Sistema federado de karma}
+\label{sec:karma}
+
+Faborez es una aplicación social que se basa totalmente en la actividad y buena voluntad de las personas que la utilicen. Lo único que estas personas reciben es un reconocimiento por parte de la aplicación y en su caso de la persona a la que se ayudó.
+
+Muchas aplicaciones ya existentes en la red gestionan este problema asignando una puntuación de karma a sus usuarios, de tal manera que unos pueden comprobar la buena voluntad de los demás. No obstante, esta puntuación nunca sale del contexto de cada aplicación, por lo que las personas que utilizan varios servicios no mantienen un karma acumulado, resultado de la federación de servicios que se reconocen mutua credibilidad.
+
+Con la popularización de los servicios web, las distintas aplicaciones están cada vez más conectadas, delegando mucha lógica común a las aplicaciones sociales en servicios externos. En este contexto, se plantea el diseño de un sistema federado de karma, de tal manera que distintas aplicaciones web compartan una única puntuación de karma para cada uno de sus usuarios. A esta entidad compartida se le denominará \enquote{registro akásico}.
+
+\section{Modelo de datos}
+
+\subsection*{Registro akásico}
+Es la representación karmática de una persona. Es única a través de varias aplicaciones, y contiene un valor de karma como resultado de sus interacciones en dichas aplicaciones. Sus datos:
+
+\begin{itemize}
+  \item Identificador público, como referencia para que otras aplicaciones puedan referenciar el registro.
+  \item Credenciales de acceso, en forma de usuario y contraseña, pero que podrán ser cambiados.
+  \item Karma, en forma de valor numérico positivo o negativo.
+\end{itemize}
+
+\subsection*{Aplicación cliente}
+Los desarrolladores que deseen utilizar el servicio de Karma deberán registrar sus aplicaciones, tal y como se hace en otros servicios (como las redes sociales) que quieran utilizar sus \glspl{api}. Sus datos:
+
+\begin{itemize}
+  \item Datos identificativos de la aplicación, como el nombre, descripción, logotipo, etc.
+  \item Credenciales de autenticación, Utilizados por el servicio de karma para autenticar las peticiones que se le realizan.
+\end{itemize}
+
+\subsection*{Actos}
+Los \emph{actos} son las acciones del registro akásico que derivan en un aumento o disminución de su karma, similares a las transacciones bancarias de un cliente de un banco. Estas transacciones podrán ser para uso privado, público, o incluso para ser visualizadas en una línea de tiempo de las acciones del usuario. Sus datos:
+
+\begin{itemize}
+  \item Referencia del registro akásico y a la aplicación cliente.
+  \item Variación del karma, en un número positivo o negativo.
+  \item Tipo de acto, de entre los predefinidos por el servicio de karma, a saber: buena acción, mala acción, gasto de puntos, etc.
+  \item Marca de tiempo.
+  \item Referencia al acto en el interior de la aplicación cliente, en forma de URL (u otro aún no planteado), para que se pueda navegar a esta acción.
+  \item Otros datos interesantes para el servicio de karma, como otros registros akásicos que han participado en la interacción.
+\end{itemize}
+
+\section{API}
+
+\subsection{Funciones del registo akásico}
+
+\paragraph{Crear registro}
+El proceso de registro que crea el registro akásico de esta persona en el servicio de karma.
+
+\paragraph{Enlazar aplicación cliente}
+La persona da acceso mediante este procedimiento para que una aplicación cliente pueda realizar acciones en su nombre, que pueden ser en nivel de escritura o de lectura.
+
+\subsection{Funciones de aplicación cliente}
+
+\paragraph{Registrar aplicación cliente}
+Este procedimiento dará de alta a la aplicación en el servicio de Karma, obteniendo sus credenciales de acceso y dando comienzo a su actividad.
+
+\paragraph{Solicitar enlace}
+Dará comienzo al proceso de enlace entre la referencia de usuario con su registro akásico en el servicio de Karma. Ver apartado sobre seguridad, \cref{sec:karma-seguridad}.
+
+\paragraph{Obtener Karma}
+Obtiene el valor de karma del registro akásico de un usuario de la aplicación cliente.
+
+\paragraph{Registrar acto}
+La aplicación cliente, a raíz de una acción que el usuario de su aplicación realiza, refleja este hecho en su registro akásico en forma de solicitud de aumento o reducción de la puntuación.
+
+\paragraph{Obtener registros akásicos}
+La aplicación cliente puede obtener por esta vía, de entre los registros que tiene asociadas a sus usuarios, aquellos que cumplan el criterio de karma especificado, dando unos valores mínimo y máximo.
+
+\subsection{Funciones de administrador}
+
+\paragraph{Establecer karma}
+Establece para un registro dado un valor concreto de karma, sobreescribiendo cualquier otro anterior.
+
+\section{Lógica de funcionamiento interno}
+
+El servicio de karma, durante su ejecución y de forma transparente a las peticiones, tendrá implementadas los siguientes módulos de lógica.
+
+\subsection{Reglas de detección y prevención de fraude}
+Parece claro que en un servicio que tiene como resultado un valor de karma, será el interés de los usuarios obtener el mejor valor posible, lo que conlleva una amenaza de sudo de técnicas fraudulentas, y desvirtuando potencialmente tanto el valor que ofrece el servicio. La detección y prevención de estas técnicas se hará mediante un sistema de reglas, donde cada una de ellas pueda ser agregada o retirada de forma modular, siendo la ejecución del conjunto transparente para el resto de servicios.
+
+Las reglas serán de dos tipos, según el momento en el que sean ejecutadas:
+\begin{enumerate}
+  \item Las instantáneas o síncronas, las cuales se ejecutarán en el momento del registro de un acto, y podrán dar lugar a un bloqueo de este registro en el caso de una anomalía. Por su naturaleza síncrona, serán reglas de rápida ejecución.
+  \item Las periódicas o asíncronas, que serán ejecutadas en unos periodos de tiempo determinados o tras el registro de un número determinado de actos. Realizarán comprobaciones que afecten a un conjunto de actos y no a uno solo, pudiendo realizar operaciones más costosas en términos de computación.
+\end{enumerate}
+
+Las consecuencias de que se incumplan esta serie de reglas podrá ser la de la eliminación de algún acto, penalizaciones en el karma del registro akásico o incluso el bloqueo del registro o la aplicación cliente que realice abusos graves.
+
+\subsection{Lógica interna}
+Asíncronamente al registro de los distintos actos de los registros akásicos, el servicio podrá modificar el karma de los usuarios, con el fin de que el funcionamiento y sus resultados se acerquen más a la realidad de lo que sería un karma.
+
+\paragraph{Gestor de caducidad}
+El servicio debe favorecer a los usuarios activos, de tal manera que el karma de los actos antiguos es \enquote{olvidado}. Esto es, de forma periódica el karma será moderado por el propio servicio, de tal manera que tienda a cero a lo largo del tiempo si dicha persona no tuviera actividad.
+
+\section{Seguridad del servicio}
+\label{sec:karma-seguridad}
+
+En el servicio de karma entran en juego tres agentes en el momento de registro de un acto:
+
+\begin{enumerate}
+  \item La persona que realiza el acto, que tiene en el servicio de karma un registro asociado.
+  \item La aplicación cliente, donde la persona ha llevado a cabo el citado acto, y que solicita al servicio el registro de este.
+  \item El propio servicio de karma, que recibe la solicitud y la registra.
+\end{enumerate}
+
+El registro del acto no puede realizarse por cualquier aplicación cliente para cualquier registro akásico, sino que debe existir una autorización específica previa del registro para la aplicación concreta.
+
+El diseño de los procedimientos que satisfacen esta necesidad ya se encuentra inventado y estandarizado en el \gls{framework} OAuth (existiendo una versión número dos actualizada)~\autocite{oauthrfc}. Por lo tanto, el servicio solo debe implementar aquellas funcionalidades concretas contempladas en la especificación, a saber:
+
+\begin{itemize}
+  \item El registro de aplicaciones cliente.
+  \item Un caso de uso en el que se autorice a estos clientes a realizar acciones en nombre de un usuario.
+  \item Los procedimientos que generen los respectivos \glspl{token} de acceso para la aplicación cliente.
+\end{itemize}
+
+Por suerte, dada la popularidad de este \gls{framework}, existen numerosas librerías prefabricadas, que cumplen los requerimientos básicos de seguridad, y que ahorrarían repetir esta funcionalidad con un esfuerzo asumible.
+
+\end{document}

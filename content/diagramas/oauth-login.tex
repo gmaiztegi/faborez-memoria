@@ -1,0 +1,36 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[auto]
+    \begin{umlseqdiag}
+      \umlactor{Usuario}
+      \umlobject{Faborez}
+      \umlobject{Google+}
+      
+      \begin{umlcall}[op={/auth/google},return={redirección a Google+}]{Usuario}{Faborez}
+      \end{umlcall}
+      
+      \begin{umlcall}[return={solicitud de permiso}]{Usuario}{Google+}
+      \end{umlcall}
+      \begin{umlcall}[op={permiso concedido},return={\gls{token} de autenticación}]{Usuario}{Google+}
+      \end{umlcall}
+
+      \begin{umlcall}[op={\gls{token} de aut.},return={\emph{login} satisfactorio}]{Usuario}{Faborez}
+        \begin{umlcall}[op={\gls{token} de aut.},return={\gls{token} de acceso}]{Faborez}{Google+}
+        \end{umlcall}
+        
+        \begin{umlcall}[op={\gls{token} de acceso},return={datos de usuario}]{Faborez}{Google+}
+        \end{umlcall}
+      \end{umlcall}
+
+ 
+    \end{umlseqdiag}
+  \end{tikzpicture}
+  \caption{Flujo de autenticación mediante Google+}
+  \label{fig:google-login}
+\end{figure}
+
+\end{document}

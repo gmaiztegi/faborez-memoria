@@ -1,0 +1,79 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \umlclass[x=3,y=6]{User}{%
+      + id : string \\ + email : string \\ + uid : integer \\ + admin : boolean
+    }{%
+      + getAvatarUrl(size: int) : string \\%
+      + isAdmin() : boolean
+    }
+
+    \umlclass[x=10,y=1]{Request}{%
+      + id : string \\ + text : string \\ + description : string \\%
+      + latitude : float \\ + longitude : float \\ + createdAt: date \\%
+      + expiresAt : date
+    }{%
+      + getStatus() : string
+    }
+    
+    \umlclass[x=4,y=2.5]{Category}{%
+      + id : string \\ + title : string
+    }{}
+
+    \umlclass[x=10,y=6]{Reply}{%
+      + id : string \\ + deleted : boolean \\ + createdAt : date%
+    }{}
+    
+    \umlclass[x=10,y=10]{Message}{%
+      + id : string \\ + text: string \\ + createdAt : date%
+    }{}
+    
+    \umlclass[x=4]{Report}{%
+      + id : string \\ + text : string
+    }{}
+    
+    \umlclass{Device}{%
+      + id : string \\ + deviceId : string \\ + type : string \\%
+      + latitude : float \\ + longitude : float
+    }{}
+    
+    \umlclass[x=5,y=11]{Token}{%
+      + id : string \\ + token : string \\ + scope : string \\%
+      + expiresAt : date
+    }{%
+      + isExpired() : boolean
+    }
+    
+    \umlclass[x=0,y=11]{RefreshToken}{%
+      + id : string \\ + token : string \\ + scope : string \\%
+      + expiresAt : date
+    }{%
+      + isExpired() : boolean
+    }
+
+    \umluniassoc[mult2=1]{Request}{User}
+    \umlassoc[mult1=*,mult2=1]{Request}{Category}
+    \umlassoc[mult1=1,mult2=*]{Request}{Report}
+    
+    \umlassoc[mult1=*,mult2=1]{Reply}{Request}
+    \umluniassoc[mult2=1]{Reply}{User}
+    
+    \umlcompo[mult1=1,mult2=1..*]{Reply}{Message}
+    \umluniassoc[mult2=1]{Message}{User}
+    
+    \umlaggreg[mult1=*,mult2=1]{User}{Device}
+    
+    \umlassoc[mult1=1,mult2=0..1]{RefreshToken}{Token}
+    \umlassoc[mult1=*,mult2=1]{RefreshToken}{User}
+    \umlassoc[mult1=*,mult2=1]{Token}{User}
+
+  \end{tikzpicture}
+  \caption{Modelo de datos del servidor}
+  \label{fig:backend-datamodel}
+\end{figure}
+
+\end{document}

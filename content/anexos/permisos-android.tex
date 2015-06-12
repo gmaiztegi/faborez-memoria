@@ -1,0 +1,38 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Permisos de las aplicaciones Android}
+\label{sec:faborez-permissions}
+
+Se ha mencionado en la memoria que la incorporación de nuevas funcionalidades al cliente de Android ha supuesto el progresivo aumento, durante el desarrollo del proyecto, de permisos necesarios para ejecutar la aplicación. Este documento enumera los permisos utilizados y la función de cada uno dentro de Faborez.
+
+Las siguientes líneas, extraídas desde el propio manifiesto (\texttt{AndroidManifest.xml}) de Faborez, son todos los permisos que se han utilizado.
+
+\begin{listing}
+  \xmlfile[firstline=11,lastline=28,firstnumber=auto,gobble=4]{codigo/faborez-manifest.xml}
+  \caption{Permisos de Android utilizados en Faborez}
+  \label{lst:faborez-manifest}
+\end{listing}
+
+A continuación se explica la utilidad de cada uno de estos permisos~\autocite{android-permissions}. Estos se agrupan en función de la finalidad, por lo que se repetirán distintos permisos al solaparse las necesidades.
+
+\paragraph{\texttt{INTERNET} y \texttt{ACCESS_NETWORK_STATE}} Son los permisos necesarios para la conexión a Internet. El primero de ellos permite abrir cualquier tipo de conexión, y el segundo es útil para comprobar la conectividad del teléfono en un momento dado.
+
+\paragraph{\texttt{ACCESS_COARSE_LOCATION} y \texttt{ACCESS_FINE_LOCATION}} Son utilizados para la geolocalización, habilitando tanto el sistema basado en la red móvil como el GPS. Después en la implementación puede escogerse cuál de los dos sistemas utilizar según las necesidades de precisión y de consumo de energía.
+
+\paragraph{\texttt{GET_ACCOUNTS}, \texttt{MANAGE_ACCOUNTS} y \texttt{AUTHENTICATE_ACCOUNTS}} Habilitan a la aplicación crear sus propias cuentas de usuario y gestionarlas, de manera que estas se muestren en la lista de cuentas de usuario en el panel \enquote{Ajustes}.
+
+\paragraph{\texttt{READ_SYNC_SETTINGS} y \texttt{WRITE_SYNC_SETTINGS}} Sumados a los anteriores abren la puerta a programar tareas de sincronización de datos automáticas, que son ejecutadas cuando el sistema operativo considera apropiado según parámetros internos.
+
+\paragraph{\texttt{RECEIVE_BOOT_COMPLETED}} Permiso para que la aplicación se ejecute al iniciar el sistema operativo. Esta característica es necesaria para activar el servicio en segundo plano que gestiona la localización de los terminales.
+
+\paragraph{\texttt{com.google.android.c2dm.permission.RECEIVE} y \texttt{WAKE_LOCK}} Permiten recibir notificaciones de \gls{gcm} y gestionarlas. El segundo permiso es necesario para poder gestionar estas notificaciones aún cuando el dispositivo se encuentra en modo inactivo.
+
+\paragraph{\texttt{VIBRATE}} Como su nombre bien indica, permite añadir vibración a las notificaciones que la aplicación muestre.
+
+\paragraph{\texttt{GET_TASKS}} Otorga el permiso de visualizar la lista de aplicaciones que se encuentran ejecutando en un momento dado. En el caso de Faborez, permite a los servicios en segundo plano comprobar si es Faborez la aplicación actual y modificar su compotamiento en el caso de errores. Si Faborez está en pantalla se muestra la pantalla de error, y si no lo está se envía una notificación.
+
+\paragraph{\texttt{INTERNET}, \texttt{ACCESS_NETWORK_STATE}, \texttt{WRITE_EXTERNAL_STORAGE} y \texttt{com.google\-.android\-.pro\-vi\-ders\-.gsf.permission.READ_GSERVICES}} En su conjunto, son los permisos mínimos para hacer funcionar Google Maps dentro de la aplicación~\autocite{maps-android-permissions}. Además de los permisos ya explicados, \texttt{WRITE_EXTERNAL_STORAGE} permite escribir a la memoria externa para guardar los mapas que se van mostrando y \texttt{READ_GSERVICES} permite acceder a los servicios de Google Play, necesario para el funcionamiento de Maps.
+
+\end{document}

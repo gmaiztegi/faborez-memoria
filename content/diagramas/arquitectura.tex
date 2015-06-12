@@ -1,0 +1,64 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[auto, node distance = 0.5cm and 0.5cm]
+    \tikzstyle{block} = [draw, align=center,
+      minimum height=1cm, minimum width=2cm, inner sep=2mm]
+    \tikzstyle{area} = [draw, rounded corners, align=center, inner sep=0]
+    
+    \begin{scope}[local bounding box=backend]
+      \tikzset{block/.append style={fill=blue!20}}
+      \node [block, minimum width=10cm, minimum height=3cm] (sails) {Sails.js\\};
+      %\node [block, below= of sails.south west, anchor=north west] (rest) {API REST};
+      \node [block, minimum width=3cm, above=0mm of sails.south west, anchor=south west] (ejs) {Plantillas EJS};
+      \node [block, minimum width=7cm, above=0mm of sails.south east, anchor=south east] (rest) {API REST};
+      
+      
+      \node [block, above=of sails.north west, anchor=south west] (mongodb) {Mongo DB};
+      \node [block, right=of mongodb] (redis) {Redis};
+      
+      \draw [<->] (mongodb.south) -- (mongodb.south |- sails.north);
+      \draw [<->] (redis.south) -- (redis.south |- sails.north);
+      
+      \node [draw, dashed, fit={(sails) (rest) (ejs) (mongodb) (redis)}] (backend-container) {};
+      
+      \node [left=of backend-container] (backend-label) {Backend};
+    \end{scope}
+    
+    \begin{scope}[local bounding box=clients]
+      \node [block, minimum width=4.5cm, below= of sails.south west, anchor=north west,fill=yellow!20] (webapp) {Aplicación web};
+      \node [block, minimum width=4.5cm, below= of sails.south east, anchor=north east,fill=green!20] (android) {Aplicación Android};
+      
+      \draw [<->] (android.north) -- (android.north |- sails.south);
+      \coordinate (android-api) at ($(ejs.south east) !0.5! (ejs.south east -| webapp.north east)$);
+      \draw [<->] (android-api) -- (android-api |- webapp.north);
+      \draw [->] (ejs.south) -- (ejs.south |- webapp.north);
+    \end{scope}
+    
+    \begin{scope}[shift={($(clients.south)+(0,-0.5cm)$)},anchor=north]
+      \tikzset{block/.append style={fill=red!20}}
+      \node [block, below=of clients.south east-|sails.east, anchor=north east] (gcm) {Goodle Cloud Messaging};
+      \node [block, left=of gcm] (maps) {Google Maps};
+      
+      
+      \node [draw, dashed, fit={(gcm) (maps)}] (google-container) {};
+      \node [left=of google-container] (google-label) {Google APIs};
+    \end{scope}
+    
+    \draw [->, dashed] (gcm.north -| android.south) -- (android.south);
+    
+    %\draw [->] (gcm.east) .. controls ($(gcm.east)!0.5!(android.east)+(2cm,0)$) .. (android.east);
+    \draw [->] (sails.east) .. controls ($(sails.east)+(1.5cm,0)$) and ($(gcm.east)+(1.5cm,0)$) .. (gcm.east);
+    
+    \draw [<->] (maps) -- (maps |- webapp.south);
+    \draw [<->] (maps.north east) -- (android.south west);
+
+  \end{tikzpicture}
+  \caption{Arquitectura de Faborez}
+  \label{fig:arquitectura}
+\end{figure}
+
+\end{document}

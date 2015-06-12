@@ -1,0 +1,48 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\section[MVC en cliente: Backbone.js]{Patrón de diseño \gls{mvc} en el cliente: \gls{backbone}}
+\label{sec:tech-backbone}
+
+Con la mejora del rendimiento de los motores JavaScript en los navegadores, las aplicaciones web han ido delegando cada vez más su lógica en el cliente y dejando tan solo una \gls{api} \gls{rest} a disposición de este.
+
+Los sitios web creados mediante este sistema utilizan \gls{ajax} para extraer este contenido de estos, transformarlos en \gls{html} y mostrarlos en pantalla. No obstante, el JavaScript plano tan solo cuenta con la clase \gls{xhr} y el resto debe ser implementado por el desarrollador.
+
+Las aplicaciones han ido además aumentando de complejidad llegando a sustituir a sus alternativas de escritorio, como en el caso de los clientes de correo y hasta suites de ofimática.
+
+Estas aplicaciones de gran escala solo se pueden lograr de forma correcta mediante patrones de diseño, como \gls{mvc}, que los organicen y aseguren su estabilidad. De esta forma, han surgido librerías de JavaScript que implementan estos modelos.
+
+\subsection[Backbone.js]{\Gls{backbone}}
+
+\Gls{backbone}~\autocite{backbone} es una librería que estructura las aplicaciones web definiendo modelos de datos, agrupando estos en colecciones y definiendo la manera en la que se van a mostrar mediante plantillas. El ejemplo \cref{lst:backbone-model} muestra un ejemplo simple de un modelo.
+
+\begin{listing}
+  \jsfile{codigo/backbone-model.js}
+  \caption[Modelo de Backbone.js]{Modelo de \gls{backbone}}
+  \label{lst:backbone-model}
+\end{listing}
+
+Se separan el modelo en sí de su forma de representación en \gls{html}, su vista. En esta se define el comportamiento de la aplicación ante los eventos de la interfaz: clic en los botones, introducción de datos en formularios, etc. En el ejemplo \cref{lst:backbone-view} se muestra cómo se elimina un elemento al hacer clic en su botón de eliminar.
+
+\begin{listing}
+  \jsfile{codigo/backbone-view.js}
+  \caption[Vista de Backbone.js con eventos]{Vista de \gls{backbone} con eventos}
+  \label{lst:backbone-view}
+\end{listing}
+
+El otro tipo de clase principal es \texttt{Collection}, que permite agrupar varios modelos del mismo tipo para mostrar elementos similares a listas.
+
+\subsection[Marionette.js]{\Gls{marionette}}
+
+Esta otra librería es un añadido a \gls{backbone}, que añade funcionalidad para trabajar con aplicaciones más complejas. Estas son sus características:
+
+\begin{itemize}
+  \item Añade varias vistas complejas que permiten, por ejemplo, trabajar con colecciones: \texttt{CollectionView}, \texttt{CompositeView}, \texttt{Layout} y \texttt{Region}.
+  \item Implementa una clase de paso de mensajes entre objetos, útil para la programación orientada a eventos.
+  \item La clase \texttt{AppRouter} facilita enlazar las \glspl{url} de la aplicación a sus respectivos controladores.
+\end{itemize}
+
+Explicar en detalle todas sus características podría ser tema para un estudio completo, lo cual no es objeto de este proyecto ni de su memoria. Se puede encontrar más información en su web~\autocite{marionette}.
+
+\end{document}

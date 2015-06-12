@@ -1,0 +1,29 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Conclusiones}
+
+En este proyecto se ha logrado la puesta en marcha de Faborez, una aplicación social cuyas características han sido definidas por los propios usuarios mediante su participación continua en el proyecto. La implementación se ha realizado utilizando tecnologías en auge dentro del mundo del desarrollo web.
+
+En un proyecto que plantea una arquitectura de estas características, y con vistas a facilitar la progresiva mejora, ha resultado vital hacer uso, en la mayor medida de lo posible, de protocolos diseños y librerías ya existentes tanto para descargar esta tarea como para asegurar la interoperatividad de los distintos componentes, como por ejemplo OAuth~2.0. Este protocolo es utilizado para la autenticación de peticiones por parte de clientes distintos al de la aplicación web, cuya especificación es pública. De hecho, se han utilizado librerías de distintos proveedores para cliente y servidor sin ningún problema de compatibilidad.
+
+Se ha adquirido una infraestructura del modelo \acrlong{paas} para alojar el \gls{backend} de Faborez. Este tipo de servidores no requieren apenas de configuración y la instalación de la primera versión, así como la actualización a futuras versiones, solo requiere de unos poco minutos. \Gls{heroku} ha sido el proveedor escogido, dado que disponía de los añadidos \gls{mongodb} y \gls{redis}, necesarios para el proyecto, y sin coste alguno. Proyectos de mayor escala requerirían un análisis más exhaustivo, ya que en el terreno de los servicios de pago las características son muy variadas.
+
+El alcance del proyecto ha partido de un prototipo inicial, un \acrlong{mvp}, implementado en forma de aplicación web, pero utilizando \gls{sails} para el \gls{backend}, cuya flexibilidad permite adaptarlo fácilmente para distintos tipos de cliente.
+
+Con este inicio, la dirección de las posteriores ampliaciones ha sido marcada por los \glspl{txapeldun}, usuarios de la aplicación, con la visión y conocimiento suficientes para aportar propuestas no solo interesantes y creativas, sino viables en gran medida para su inclusión dentro del alcance del proyecto.
+
+La participación de los \emph{betatester}s no ha resultado ser trivial, ya que para optimizar la utilidad de su tiempo se han planificado las distintas entrevistas, acompañadas de cuestionarios que ayuden a centrar la atención en los aspectos que necesiten de \emph{feedback}.
+
+Así mismo, se ha procurado mantener la motivación de los usuarios con \emph{feedback} sobre el progreso y pequeños alicientes. De hecho, la propia aplicación desarrollada ha resultado ser la vía idónea para \enquote{pedir el favor} de realizar las pruebas que en el momento fueran necesarias.
+
+Además, la recogida de \emph{feedback} no ha sido una tarea meramente organizativa. Se han utilizado herramientas tecnológicas que, sin conllevar trabajo al usuario, han recopilado los errores ocurridos durante la ejecución. Para esta tarea se ha utilizado el servicio Bugsense, desconocido previamente y que probablemente será utilizado en proyectos futuros fuera del ámbito de la universidad.
+
+No obstante, se podría profundizar aún más en la búsqueda de herramientas tecnológicas para simplificar la gestión de comentarios, que en este caso se ha llevado artesanalmente. Los servicios de pago ofertan características como gestión de incidencias y recogida de \emph{feedback} utilizando capturas de pantalla, por ejemplo, pudiendo los usuarios añadir este contenido \emph{motu proprio}.
+
+Esto último pasaría a ser un requisito indispensable si, en vez de forma individual, el desarrollo se hubiera llevado en equipo. En estas situaciones debe existir un sistema de información organizado que permita a cualquier miembro del equipo conocer el estado global del proyecto, junto con toda la información relevante, como son las aportaciones de los \glspl{txapeldun}. En estos casos sería conveniente que hubiera un miembro del equipo dedicado a las tareas de interacción con los usuarios, intentando que estuviera menos influenciado por los asuntos técnicos. En la jerga utilizada en las metodologías ágiles a esta persona se le suele denominar \enquote{\emph{product owner}}.
+
+No se debe olvidar que el fin último de cualquier ingeniero es poner la tecnología al servicio y utilidad de las personas. Para cumplir con ese fin no solo se debe conocer a fondo el área de estudio, sino que es indispensable saber tratar con las personas. Los proyectos que integran a usuarios reales desde la base, no solo son más enriquecedores y pedagógicos, sino que además logran romper con el estigma de que \enquote{los Proyectos Fin de Carrera se archivan y olvidan una vez dados por finalizados}.
+
+\end{document}

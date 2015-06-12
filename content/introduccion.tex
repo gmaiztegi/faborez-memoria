@@ -1,0 +1,59 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Introducción}
+
+En los últimos años se ha producido una casi completa socialización de los \emph{smartphones}. Poca gente a día de hoy no utiliza a diario un teléfono móvil con conexión a Internet y con la posibilidad de instalar en él aplicaciones de todo tipo.
+
+Esta popularización no se ha conseguido, no obstante, por las capacidades de los propios dispositivos, sino por su apertura al mundo de los desarrolladores y la facilidad que tienen estos de ampliar su funcionalidad con programas que los usuarios pueden instalar fácilmente.
+
+De esta manera, al igual que ha ocurrido con muchas invenciones, no solo han cubierto las necesidades que se tenían \emph{a priori} de inventarse estas aplicaciones, sino que han traído consigo la creación de necesidades nuevas no percibidas hasta el momento por la mayoría de las personas. A saber: la gestión de la contabilidad personal, registro de las actividades de ejercicio o incluso la publicación de fotos por el mero hecho de que sean visualizadas por un anónimo. Estas necesidades son llamadas popularmente \enquote{\emph{first world problems}}, o \enquote{problemas del primer mundo} en castellano.
+
+En este contexto de saturación del mercado de las \glspl{app} es donde Faborez toma forma y es creada precisamente para satisfacer, y probablemente crear, otra necesidad no existente o no percibida hasta el momento: la petición de ayuda urgente y cercana a gente no necesariamente conocida.
+
+El trabajo realizado en este Proyecto Fin de Carrera ha tenido como objetivo la concepción, diseño e implementación de la aplicación que pretende dar solución a esta necesidad aparentemente simple.
+
+El progresivo desarrollo del producto ha sido conducido por un grupo de usuarios selectos, denominados \glspl{txapeldun}, en los cuales se ha delegado la tarea de tomar las decisiones sobre el diseño y las características del producto. Esta integración de personas externas ha requerido tareas de gestión exclusivas, con entrevistas guiadas por cuestionarios, comunicación constante sobre el progreso del proyecto y tecnologías para la automatización del \emph{feedback} en caso de error.
+
+Faborez ha sido implementado con tecnologías de código libre en auge dentro del mundo del desarrollo web. Se ha utilizado \gls{sails} como \gls{framework} para el \gls{backend}, siendo este el eje angular para el servicio. El almacenamiento de los datos se ha realizado en bases de datos \gls{nosql}: \gls{mongodb} para la persistencia de los datos de la aplicación en general y \gls{redis} para los datos de la sesión.
+
+Se han desarrollado dos clientes: una aplicación web y una \gls{app} para Android. Se ha descartado el desarrollo en forma de aplicación multiplataforma debido a las limitaciones de estos entornos, tras lo cual se ha optado por el sistema operativo Android por el conocimiento previo y mayor popularidad respecto a otras plataformas.
+
+Los servicios de Google forman una pieza primordial en la arquitectura de Faborez. Por un lado, la autenticación de los usuarios se realiza mediante Google+, descargando la tarea de gestionar credenciales. Por otro, se ha hecho uso de \gls{gcm} para el envío de notificaciones \gls{push} a los dispositivos móviles, para así alertarles de las peticiones de favor.
+
+Tras analizar las distintas alternativas, se ha desplegado Faborez en el servicio \gls{paas} \gls{heroku}, que con poco esfuerzo de configuración y de forma gratuita ha alojado la aplicación desde el inicio hasta el final del proyecto.
+
+
+Este documento, que es la memoria del trabajo realizado por Gorka Maiztegi Etxeberria bajo la dirección del doctor José Miguel Blanco Arbe durante el curso académico 2013/2014, está estructurado de la siguiente forma:
+
+\begin{itemize}
+    \item Los \textbf{objetivos} del proyecto, explicando el problema a resolver mediante \textbf{historias de usuario}, el \textbf{alcance} que el proyecto ha abarcado y las \textbf{exclusiones} de éste.
+    
+    \item Las \textbf{tecnologías} que se han utilizado para desarrollar el producto, describiendo para cada una las razones que llevaron a su elección frente a las alternativas existentes.
+    
+    \item Los procesos de selección, gestión y motivación de los \textbf{\glspl{txapeldun}} del proyecto. Se abordan los métodos utilizados para la recogida del \emph{feedback} y su integración dentro del desarrollo del proyecto.
+    
+    \item Se describe la \textbf{arquitectura} global de Faborez, enumerando las partes que lo componen y la interacción entre todas ella. Este apartado hace un especial énfasis en cómo se integran los servicios de Google en el funcionamiento del servicio.
+    
+    \item Para cada una de las \textbf{partes desarrolladas} (\gls{backend}, y clientes web y Android), se describe su funcionamiento interno, explicando el modelo de datos propio de cada uno, la lógica de negocio que tratan y las interfaces gráficas. Todos estos elementos van acompañados de ilustraciones y diagramas que ayudan a entender su contenido.
+    
+    \item El siguiente capítulo relata la \textbf{gestión propia del proyecto} en las áreas principales no tratadas en el resto de la memoria: el alcance, el tiempo y los costes.
+    
+    \item El proyecto concluye con las \textbf{valoraciones} personales como extracto de la experiencia de este proyecto, a los cuales les acompañan algunas \textbf{lecciones aprendidas} probablemente útiles en proyectos futuros similares a este.
+\end{itemize}
+
+A lo largo de toda la memoria se repiten numerosos términos y acrónimos que podrían ser desconocidos para el lector o tener, en el contexto de este proyecto, un significado distinto. Por ello, se adjunta un \textbf{glosario} que describe la definición de estas palabras, al cual conviene acudir en caso de duda.
+
+Además, a pesar de su condición de \textbf{apéndices} de esta memoria, se debe destacar el interés de estos documentos que ponen fin al documento:
+
+\begin{itemize}
+  \item El \cref{sec:faborez-permissions} enumera los permisos que la aplicación de Android de Faborez solicita al instalarse. Su gran número sorprende a primera vista, por lo que se ha considerado necesaria una explicación detallada de todos ellos.
+  
+  \item En la implementación del cliente móvil se encontró un error presente en una de las librerías utilizadas, en este caso la encargada para autenticar las peticiones de red mediante OAuth~2.0, desarrollado por Google. Este error, que ya ha sido reportado, se explica en el \cref{sec:google-error-report}.
+  
+  \item Finalmente, con el objetivo de poder integrarlo en Faborez, se ha hecho un proceso de reflexión que ha dado como fruto el diseño conceptual de un sistema federado de karma, explicado en el \cref{sec:karma}. Este sistema, implementado como un servicio web externo, ofrecería poder guardar un valor de karma para una misma persona, para ser accesible a los distintos servicios que utiliza.
+\end{itemize}
+
+
+\end{document}

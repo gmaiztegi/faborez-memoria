@@ -1,0 +1,42 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+
+    \umlclass{User}{%
+      + id : String \\ + name : String \\ + email : String \\ + avatarUrl : String
+    }{}
+    
+    \umlclass[x=6]{Request}{%
+      + id : String \\ + title : String \\ + description : String \\ + status : String \\ %
+      + latitude : double \\ + longitude : double \\ + createdAt : DateTime \\ %
+      + expiresAt : DateTime
+    }{}
+    
+    \umlclass[x=9,y=5]{Category}{%
+      + id : String \\ + title : String
+    }{}
+    
+    \umlclass[x=5,y=5]{Reply}{%
+      + id : String
+    }{}
+    
+    \umlclass[x=0,y=5]{Message}{%
+      + id : String \\ + text : String \\ + replyId : String
+    }{}
+    
+    \umlassoc[mult1=*,mult2=1]{Reply}{Request}
+    \umlcompo[mult1=1,mult2=1..*]{Reply}{Message}
+    \umluniassoc[mult2=1]{Request}{User}
+    \umlassoc[mult1=*,mult2=1]{Request}{Category}
+    \umluniassoc[mult2=1]{Message}{User}
+    
+  \end{tikzpicture}
+  \caption{Modelo de datos en memoria del cliente Android}
+  \label{fig:android-datamodel}
+\end{figure}
+
+\end{document}

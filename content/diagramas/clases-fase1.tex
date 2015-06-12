@@ -1,0 +1,53 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+%    \begin{class}{User}{0,0}
+%      \attribute{id : String}
+%      \attribute{email : String}
+%    \end{class}
+    \umlclass[x=0,y=0]{User}{%
+      + id : string \\ + email : string
+    }{}
+    
+%    \begin{class}{Request}{10,0}
+%      \attribute{id : String}
+%      \attribute{text : String}
+%      \attribute{description : String}
+%      \attribute{latitude : Double}
+%      \attribute{longitude : Double}
+%      \attribute{createdAt : Date}
+%    \end{class}
+
+    \umlclass[x=10,y=0]{Request}{%
+      + id : string \\ + text : string \\ + description : string \\%
+      + latitude : float \\ + longitude : float \\ + createdAt: date
+    }{}
+    
+%    \begin{class}{Reply}{8,6}
+%      \attribute{id : String}
+%      \attribute{text : String}
+%      \attribute{createdAt : Date}
+%    \end{class}
+
+    \umlclass[x=8,y=6]{Reply}{%
+      + id : string \\ + text : string \\ + createdAt : Date %
+    }{}
+    
+%    \unidirectionalAssociation{Request}{user}{1}{User}
+%    \association{Reply}{replies}{0..*}{Request}{request}{1}
+%    \unidirectionalAssociation{Reply}{replier}{1}{User}
+
+    \umluniassoc[mult2=1,arg2=user]{Request}{User}
+    \umlassoc[arg1=replies,mult1=*,arg2=reply,mult2=1]{Reply}{Request}
+    \umluniassoc[mult2=1,arg2=replier]{Reply}{User}
+
+  \end{tikzpicture}
+  \caption{Diagrama de clases en primera fase}
+  \label{fig:clases-fase1}
+\end{figure}
+
+\end{document}

@@ -1,0 +1,148 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Cliente Android}
+
+La aplicación móvil para Android es el cliente preferencial\footnote{Debido a algunas carencias del cliente web, como las notificaciones, que hacen que tenga una funcionalidad más reducida.} para acceder a Faborez. En ella se implementan todos los casos de uso que el servicio dispone.
+
+Como se ha mencionado en el \cref{sec:tech-android}, la aplicación se ha implementado mediante Java, utilizando la \gls{api} nativa de Android. Por lo tanto, los casos de uso se dividen en las distintas partes de la interfaz (llamados \gls{activity}) y los servicios en segundo plano (llamados \emph{Service}s), que se describen más adelante.
+
+\section{Modelo de datos}
+\label{sec:android-datamodel}
+
+Siguiendo la arquitectura basada en el servidor (\cref{sec:arquitectura}), el cliente Android no almacena de forma permanente los datos de la lógica de negocio que genera o descarga del servidor, y solo existen mientras se encuentran en memoria. Esta es una decisión de diseño que tiene como objetivo evitar la inconsistencia de datos entre cliente y servidor.
+
+Los datos guardados son los relativos a la autenticación de los usuarios y los ajustes. El método para el almacenamiento de estos es la clase \texttt{SharedPreferences} de Android~\autocite{android-storage}, que almacena los datos en formato XML. En el \cref{tab:android-persisted} se muestran los datos que son almacenados.
+
+\begin{table}
+  \centering
+  \begin{tabulary}{\textwidth}{L L L}
+    \toprule
+    \textbf{Archivo} & \textbf{Campo} & \textbf{Descripción} \tabularnewline
+    \midrule
+    \multirow{2}{*}{\texttt{userconfig.xml}} & user & Perfil del usuario en formato \gls{json} \tabularnewline
+     & categories & Categorías sincronizadas del servidor en formato \gls{json} \tabularnewline
+    \midrule
+    \texttt{faborez_preferences.xml} & default_expirity & Caducidad por defecto de las peticiones \tabularnewline
+    & notifications_new_message & Si se deben enviar notificaciones \tabularnewline
+    & notifications_new_message_ringtone & Sonido de las notificaciones \tabularnewline
+    & notifications_new_message_vibrate & Si la vibración se encuentra activada \tabularnewline
+    & custom_language & Idioma por defecto \tabularnewline
+    \midrule
+    \multirow{3}{*}{\texttt{NetworkPrefs.xml}} & access_token & \Gls{token} de acceso \tabularnewline
+    & refresh_token & \Gls{token} de refresco \tabularnewline
+    & token_expiration & Fecha de caducidad del \gls{token} de acceso \tabularnewline
+    \bottomrule
+  \end{tabulary}
+  \caption{Preferencias almacenadas por el cliente Android}
+  \label{tab:android-persisted}
+\end{table}
+
+No obstante, la aplicación Android sí tiene implementadas las clases necesarias para trabajar con los datos que se descargan del servidor, en forma de \glspl{pojo}. La librería \gls{jackson} se utiliza para convertir las cadenas \gls{json} en estos objetos \gls{pojo}. Las clases se muestran en la \cref{fig:android-datamodel}.
+
+\subfile{content/diagramas/android-modelo-datos}
+
+\section{Casos de uso}
+
+Los casos de uso de la aplicación de Android se dividen en dos categorías. Por un lado, están todas aquellas operaciones que el usuario ejecuta de forma explícita durante el uso mediante la interfaz gráfica. Por otro, son aquellas operaciones que se ejecutan de forma automática en segundo plano.
+
+\subsection{Interfaces de usuario}
+
+Las interfaces de usuario de Android se implementan mediante las llamadas \glspl{activity} que contienen toda su lógica y controlan su ciclo de vida. Estas interfaces a su vez pueden estar compuestas por varias \glspl{fragment}, que son subinterfaces reutilizables con su propio ciclo de vida. A continuación se presentan las siete \glspl{activity} de Faborez: \texttt{SplashActivity}, \texttt{MainActivity}, \texttt{MakeRequestActivity}, \texttt{ShowRequestActivity}, \texttt{ReplyActivity}, \texttt{UserActivity} y \texttt{SettingsActivity}. En la \cref{fig:activity-relations} se muestra la navegación entre ellas.
+
+\subfile{content/diagramas/android-navegacion}
+
+\subsubsection{SplashActivity}
+
+Es la interfaz que se muestra al iniciar el programa por primera vez. Se muestra el logo de la aplicación, junto con un icono de Google+ para iniciar sesión. Este botón comienza la secuencia de autenticación, primero con Google y después con el \gls{backend} de Faborez, para a continuación redirigir al usuario a \texttt{MainActivity}.
+
+\subsubsection{MainActivity}
+
+El punto de partida de todas las acciones que se pueden realizar en el cliente de Android de Faborez. En la parte inferior se encuentra el botón que permite realizar una petición, redirigiendo a \texttt{MakeRequestActivity}.
+
+Por otra parte contiene dos menús laterales uno a cada lado. En el izquierdo, en coordinación con el mapa, se pueden encontrar las peticiones de favor cercanas al usuario. El de la izquierda es un menú propiamente dicho, que cambia la información que \texttt{MainActivity} muestra (cambiando el \gls{fragment}), o conduce a la interfaz de ajustes \texttt{SettingsActivity}.
+
+Los \gls{fragment} que la parte central puede mostrar son las siguientes:
+
+\begin{description}
+  \item[MapFragment] Muestra el mapa de las peticiones cercanas, así como el botón inferior para realizar peticiones. En el menú se muestra como \enquote{Inicio}.
+  \item[UserRepliesFragment] En el cual se encuentran las respuestas a las peticiones del usuario actual. Se denomina en el menú como \enquote{Mis respuestas}.
+  \item[UserRequestsFragment] Este es el histórico de peticiones del usuario. Los colores indican el estado de la petición. En el menú se muestra como \enquote{Mis peticiones}.
+\end{description}
+
+\subsubsection{MakeRequestActivity}
+
+Esta interfaz se vale de \texttt{RequestFormFragment} para mostrar el formulario de creación de una petición. Si la creación tiene éxito, se abre una instancia de \texttt{ShowRequestActivity} que muestra sus datos.
+
+\subsubsection{ShowRequestActivity}
+
+Esta interfaz muestra los detalles sobre una petición de favor. Por un lado su título, descripción y caducidad, por otro un enlace al perfil del usuario y por último las respuestas que la petición ha recibido. Si la petición que se muestra es de otro usuario, se muestra un enlace para escribir una respuesta a la petición.
+
+En el caso del autor, este enlace lleva a la interfaz \texttt{UserActivity}, y en el caso de las respuestas a \texttt{ReplyActivity}.
+
+\subsubsection{ReplyActivity}
+
+Es la actividad que muestra la ventana de conversación entre la persona que realiza la petición y la que responde. En él se pueden agregar más mensajes, además de cancelar el hilo de mensajes y aceptarlo como respuesta definitiva, en el caso del usuario que registró la petición.
+
+\subsubsection{UserActivity}
+
+Muestra el perfil del usuario, ya sea el activo u otro al que se ha llegado mediante una petición. Se muestra el nombre, el avatar y el histórico de peticiones del usuario.
+
+\subsubsection{SettingsActivity}
+
+A esta interfaz se llega mediante el menú lateral de la interfaz \texttt{MainActivity}. Muestra los parámetros que el usuario puede ajustar, a saber:
+
+\begin{itemize}
+  \item Caducidad por defecto de las peticiones realizadas en el futuro.
+  \item Idioma de la interfaz del usuario.
+  \item Los ajustes relativos a las notficaciones: activarlos o desactivarlos del todo, la vibración y el sonido.
+\end{itemize}
+
+\subsection{Servicios en segundo plano}
+
+Existen dos funcionalidades que se encuentran implementadas mediante servicios en segundo plano, y que se ejecutan al margen de que la aplicación se encuentre en pantalla o no.
+
+\subsubsection{Servicio de localización}
+
+Su funcionalidad es la de informar al \gls{backend} de Faborez sobre la localización de los dispositivos de forma periódica, con la finalidad de enviar notificaciones solamente a los dispositivos cercanos a la petición.
+
+\texttt{LocationService} es un servicio que comienza su ejecución tras el inicio de sesión o automáticamente cuando arranca el sistema operativo Android, si ya se había iniciado sesión anteriormente. En su inicialización realiza las siguientes tareas:
+
+\begin{enumerate}
+  \item Inicializa el gestor de localización para recibir notificaciones periódicas de las coordenadas.
+  \item Registra la aplicación con \gls{gcm}, del cual obtiene un código de identificación.
+  \item Este código es enviado al \gls{backend} de Faborez, el cual lo almacena.
+\end{enumerate}
+
+El servicio de localización sobre el que se basa \texttt{LocationService} es el \emph{Location APIs} de \emph{Google Play}~\autocite{android-location}. Con la finalidad de ahorrar batería, se establecen unos límites sobre la periodicidad en la que se reciben notificaciones del cambio de localización, a la vez que se mantiene un mínimo de precisión. Los criterios son los siguientes:
+
+\begin{itemize}
+  \item Como mínimo el dispositivo se debe haber desplazado \textbf{\SI{250}{\meter}} desde la anterior actualización.
+  \item Se notificará cuando se desplace esta distancia, y en cualquier caso mínimamente \textbf{cada hora}.
+  \item No obstante, como máximo se enviará una notificación cada \textbf{\SI{10}{\minute}} como máximo.
+\end{itemize}
+
+Cuando una notificación de \emph{Location APIs} ocurra, el servicio enviará las coordenadas recibidas al \gls{backend} de Faborez.
+
+El servicio está programado para ejecutarse infinitamente, aunque el sistema operativo puede determinar que debe terminarse por varias razones. En el momento de la parada se desconecta el servicio de localización \emph{Locaction APIs}, para dejar de recibir actualizaciones de la posición.
+
+\subsubsection{Servicio de notificaciones}
+
+El servicio de notificaciones es el encargado de recibir los mensajes entrantes de \gls{gcm} y, en su caso, mostrar las notificaciones al usuario. A diferencia del servicio de localización, este servicio es de carácter pasivo, activándose por eventos externos y se cierra al terminar las tareas pertinentes.
+
+El servicio se implementa en dos clases distintas: \texttt{GcmIntentService}, que contiene la mayor parte de la lógica y muestra las notificaciones, y \texttt{GcmBroadcastReceiver}, la clase auxiliar que recive los avisos de \gls{gcm} y tiene como tarea activar el servicio principal.
+
+El funcionamiento se activa cuando el \gls{backend} envía una notificación al dispositivo, y sigue los siguientes pasos:
+
+\begin{enumerate}
+  \item \texttt{GcmBroadcastReceiver} recibe la notificación del mensaje, activa el servicio \texttt{GcmIntentService} y se lo envía.
+  \item \texttt{GcmIntentService} comprueba si se trata de un mensaje correcto y decodifica sus contenidos: tipo de notificación e identificador del dato.
+  \item Según el tipo, conecta con el \gls{backend} y descarga mediante su \gls{api} \gls{rest} todos los datos sobre el nuevo contenido.
+  \item Utilizando el contenido recién descargado, los datos del usuario y las preferencias de notificación, se construye una notificación de Android, que contiene los textos e imágenes correspondientes.
+  \item A no ser que estuviera desactivado, se muestra la notificación al usuario, mediante el servicio \texttt{NotificationManager}.
+\end{enumerate}
+
+Una vez realizada la tarea, el servicio se desactivaría si no hubiera más mensajes que tratar, aunque este es un proceso realizado internamente por el sistema operativo, por lo que su funcionamiento es transparente al usuario.
+
+\end{document}

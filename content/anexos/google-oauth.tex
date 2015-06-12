@@ -1,0 +1,26 @@
+\documentclass[main]{subfile}
+
+\begin{document}
+
+\chapter{Reporte de error a Google}
+\label{sec:google-error-report}
+  
+La autenticación de los clientes con el \gls{backend} se realiza mediante claves de sesión en el caso de la aplicación web, y con el protocolo OAuth~2.0 en el cliente Android (ver \cref{sec:arquitectura-autenticación}). Al estar este último protocolo estandarizado, suele ser conveniente utilizar librerías de terceros ya probadas con el fin de evitar errores.
+
+Como el cliente Android es implementado en Java, la librería escogida fue la que Google pone a disposición del público, con el nombre \emph{Google OAuth Client Library for Java}~\autocite{google-oauth-client}. Esta librería contiene la clase \texttt{Credential}, que proporcionándole las \glspl{url} del llamado \emph{token endpoint}~\autocite[sec.~3.2]{oauthrfc} y los \glspl{token} de acceso y refresco iniciales, automatiza el refresco del \gls{token} de acceso cuando éste caduca, de forma transparente, tanto para el usuario como para el desarrollador.
+
+Al utilizarlo, se comprobó que la librería no detectaba correctamente la caducidad del \gls{token}, identificando el mensaje de caducidad del servidor como un error de autenticación desconocido, y obligando al usuario a realizar el proceso de \emph{login} completo.
+
+Tras un proceso intensivo de revisión del código de la librería y de \emph{debugging}, se encontró el error en el código de la librería. Resulta que el protocolo OAuth~2.0 indica \autocite[cap.~3]{oauth-bearer-rfc} que la invalidez de un \gls{token} se notifica indicando entre las cabeceras \gls{http} el texto \texttt{error="invalid_token"}.
+
+La librería de Google realiza esta detección mediante la siguiente expresión regular: 
+
+\mintinline{java}|INVALID_TOKEN_ERROR = Pattern.compile("\\s*error\\s*=\\s*invalid_token");|
+
+Como se ve, esta expresión regular no tiene en cuenta las comillas del texto \texttt{invalid_token}, por lo que actua incorrectamente y no realiza el refresco del \gls{token}. El código correcto debería ser el siguiente:
+
+\mintinline{java}|INVALID_TOKEN_ERROR = Pattern.compile("\\s*error\\s*=\\s*\"invalid_token\"");|
+
+Este error, junto con el código propuesto para arreglar, se envió al sistema de soporte de la propia librería\footnote{\url{https://code.google.com/p/google-oauth-java-client/issues/detail?id=88}}, y actualmente, a la fecha de finalización de esta memoria, los desarrolladores de Google se encuentran investigándolo.
+
+\end{document}

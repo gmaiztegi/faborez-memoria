@@ -1,0 +1,85 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Participación de los usuarios en el proyecto}
+\label{sec:txapeldunes}
+
+Desde la concepción de la idea de Faborez, hasta la materialización de este en un proyecto definido y materializado existe un gran trabajo de recopilación de ideas y tomas de decisiones.
+
+En muchos proyectos fin de carrera que se llevan a cabo en las Facultades de Informática, y probablemente en otras titulaciones, es el propio alumno el que especifica, diseña e implementa el producto a desarrollar y es quien evalúa los resultados, sin otra interacción con posibles clientes o usuarios que la que, eventualmente, ejerce el director del proyecto como \emph{representante} de dicho colectivo.
+
+Este proceso unipersonal, al que algunos profesores de Gestión de proyectos denominan \enquote{Proyectos Juan Palomo}\footnote{En referencia al dicho popular \enquote{Juan Palomo, yo me lo guiso, yo me lo como}.}, deriva en un producto con errores de diseño, carencias de funcionalidad y que para el resto de usuarios no es útil o agradable.
+
+Por ello, la integración de los usuarios en el proceso de desarrollo del proyecto resulta esencial, si lo que se quiere lograr es un producto que realmente va a ser útil y popular. Son sus opiniones las que deben ser tenidas en cuenta en todo momento~\autocite{mikelnino:clientes}.
+
+Este capítulo de la memoria describe la metodología seguida durante el trabajo con los usuarios, cuales han sido los criterios para su selección y categorización, las vías utilizadas para la obtención de \emph{feedback} y su posterior procesamiento en el proyecto.
+
+\section[La muestra de txapeldunes]{La muestra de \glspl{txapeldun}}
+
+Los usuarios para la fase de pruebas deben cumplir con algunos criterios para que la experiencia, tanto la de usuario como la del desarrollador, sea satisfactoria y de resultados útiles.
+
+Además, este grupo de usuarios se dividirá en dos. El grupo mayoritario no pasará de ser un grupo estándar de usuarios, que utilicen y den vida a la aplicación y que mientras tanto reporten los fallos que vayan ocurriendo. Para escoger las personas de este grupo, se han analizado los siguientes parámetros:
+
+\begin{itemize}
+  \item Localización geográfica habitual, para que converja una masa crítica de peticiones y usuarios dispuestos a responder. No es necesario que se forme un único núcleo, sino que puede haber varios si existieran las suficientes personas.
+  \item Una gama amplia de dispositivos en los que se utiliza la aplicación aumenta la probabilidad de encontrar fallos y optimizar la aplicación para múltiples dispositivos. Entre otros, los factores a tener en cuenta serán: si es un teléfono o una tableta, versión del sistema operativo, tamaño de la pantalla, si utiliza un teclado táctil o es uno físico, etc.
+  \item La personalidad de los propios usuarios es clave para obtener el tipo de \emph{feedback} que se se quiera. Se descartan los perfiles de gente demasiado crítica (que pueden sobrecargar con comentarios no constructivos) o aquellos que pueden tender a llamar la atención mediante bromas en la aplicación. Son deseables aquellas personas que tengan un nivel técnico medio para proponer mejoras maduras y que estén habituados al uso de aplicaciones sociales en sus móviles. Por último, es conveniente contar con \emph{tester}s de ambos géneros y de distintos perfiles lingüísticos.
+  \item No obstante al punto anterior, también es interesante contar con perfiles \enquote{tópicos} que pueden dar lugar a circunstancias que planteen un reto para el proyecto no pensado hasta el momento. Por ejemplo, uno de estos usuarios podría realizar peticiones de favores no apropiados, generando así la necesidad de planificar cómo se deben gestionar estos hechos, antes de que ocurran en un público general.
+\end{itemize}
+
+De entre todos los usuarios de prueba, existirá un subconjunto con mayores funciones que el resto. Además del mero uso de la aplicación, tendrán un papel activo en el planteamiento de propuestas y mejoras, manteniendo una relación constante con el desarrollador. Estas personas se denominarán \glspl{txapeldun}, en referencia a los campeones que antiguamente se disputaban en duelo en defensa y representación de otras personas.
+
+Estos \glspl{txapeldun}, además de cumplir con los puntos anteriormente enumerados, serán personas cercanas y de confianza, con la disponibilidad suficiente como para mantener reuniones regulares y su actitud deberá ser proactiva desde el inicio. La función de estas personas será la de visualizar la aplicación hacia el futuro y proponer mejoras hacia ese objetivo, fijarse en los detalles que el usuario corriente no percibiría y tomar las decisiones sobre el diseño en representación de otros usuarios de la aplicación.
+
+\section{Documentación a preparar}
+
+Los \emph{tester}s necesitan están informados de su condición, de sus funciones y de lo que ocurre alrededor de la aplicación, por lo que se preparará la siguiente documentación para estos, que ayuden a cumplir los objetivos deseados~\autocite{mikelnino:entrevistas}:
+
+\paragraph{Guía del \gls{txapeldun}}
+Documento corto y preciso que describe, por una parte, la filosofía de Faborez y las características que tiene, junto con las exclusiones. Por otra, unas pautas de actuación como \emph{tester}s: invitación a utilizar exhaustivamente la aplicación, a fijarse en las características que puedan ser mejoradas y a cómo transmitir el \emph{feedback}.
+
+\paragraph{Cuestionarios}
+Las dinámicas para obtener el \emph{feedback} no pueden ser completamente desatendidas, y las dinámicas deben estar dirigidas. Esta dirección se ha llevado a cabo utilizando unos cuestionarios preparados antes de las entrevistas, para ser entregados en ellas.
+
+Los cuestionarios introducen inicialmente los cambios que ha habido desde la última entrevista para poner en contexto al usuario. Posteriormente, se enumeran las acciones que deberían realizar junto con las preguntas sobre estas características, o notas para centrar la atención en puntos del diseño.
+
+\paragraph{Actas de \emph{feedback}}
+Los comentarios, aportaciones y cualquier otro dato interesante aportado se anota en actas fechadas. Al ser un documento directo del \emph{feedback}, es importante no realizar filtro de los comentarios, más allá de un mínimo, y recibir todos los aportes tal cual sean transmitidos por el \emph{betatester}.
+
+\paragraph{Propuestas de mejora}
+Del \emph{feedback} en bruto recibido de los usuarios, tras analizar su viabilidad, unificar las similares y adaptarlas a las posibilidades, son exportadas en un documento que recoge las propuestas de mejora que se llevarán a cabo en un futuro. Este documento es dinámico, ya que se irán añadiendo a la lista nuevas propuestas, se descartarán algunas anteriores o nuevas ideas pueden superar y reemplazar a las anteriores.
+
+
+\section{Metodología de interacción}
+
+La participación de los usuarios en el proceso de desarrollo requiere de un procedimiento dedicado y de planificación propia, teniendo claro en cada interacción la información que se quiere obtener de ellos.
+
+Esta es la metodología seguida para integrar los comentarios de los \glspl{txapeldun} durante el desarrollo de este proyecto. El proceso pasa por las fases de introducción, \emph{feedback} y de notificación posterior sobre el progreso.
+
+\subsection{Introducción a la aplicación}
+
+La interacción comienza en el momento que el usuario se topa con la aplicación. Los \glspl{txapeldun} son informados en el inicio sobre qué es Faborez y sobre cuales serán sus funciones como \emph{tester}s.
+
+Como muchos de los comentarios de los usuarios surgen en el primer contacto y pueden pasar desapercibidos, se debe estar presente desde el inicio. Les es repartido, paralelo a la instalación, el documento \enquote{Guía de los \glspl{txapeldun}}.
+
+\subsection{Feedback sobre la usabilidad}
+
+Dadas las funcionalidades de la aplicación, se les invita a que pongan en marcha cada uno de los usos de caso, pero sin las instrucciones para ello. Se toma nota de la rapidez con la que los usuarios actúan para llevar a cabo estas tareas, y fijándose en los sitios donde puedan tener dudas sobre cómo avanzar.
+
+Los cuestionarios serán los que encaminen este procedimiento, asegurando que incluyan apartados relativos a aquellos diseños de la aplicación que han sido decididos por el desarrollador y no por los usuarios.
+
+\subsection{Notificación de novedades}
+
+Todos los usuarios notarán que la aplicación es automáticamente actualizada en el momento que se suba una nueva versión, pero no obstante no conocerán las novedades que esta versión pueda traer consigo.
+
+Para cada actualización significativa los \glspl{txapeldun} serán informados acerca de la novedad por dos motivos. Primero, para mantener su nivel de implicación haciéndoles parte de toda la información. Y segundo, para que prueben las nuevas funcionalidades y sea posible depurar los posibles errores.
+
+
+\section{Canales de comunicación}
+
+Los \glspl{txapeldun} deben tener vías de comunicación directas con el desarrollador y desde el propio teléfono móvil. Es más, es interesante que puedan hablar entre ellos y proporcionarse información sin contar con el desarrollador. Para esta tarea se ha utilizado la aplicación \gls{telegram}, creando un grupo de contactos en esta plataforma. Además de escribir mensajes de texto, permite enviar capturas de pantalla y cualquier otro archivo multimedia de forma sencilla.
+
+Faborez es también un medio excelente de comunicación con los usuarios. Ante la necesidad de que los \glspl{txapeldun} realicen algunas tareas dentro de la aplicación, puede ser transmitido como una petición de \emph{favor} más. En la misma línea, las peticiones pueden contener un aliciente en forma de recompensa a cambio de, por ejemplo, responder a la demanda. 
+
+\end{document}

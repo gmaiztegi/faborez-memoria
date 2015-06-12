@@ -1,0 +1,108 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Gestión del proyecto}
+
+Este proyecto que ha desarrollado Faborez ha seguido la filosofía \emph{Lean Startup}~\autocite{leanstartup}, que sin una planificación inicial establecida ha basado su desarrollo en una serie de principios a modo de \emph{metaplanificación}. Estos principios generales han sido: el comienzo mediante un prototipo mínimo y funcional, la pronta introducción del \emph{feedback} de los usuarios en el producto y la posterior ampliación progresiva del alcance en base a esta información.
+
+Esta ampliación se ha producido mediante la interacción con los \glspl{txapeldun} y la integración de sus aportaciones en el proyecto. De la misma forma, la gestión de la calidad se ha realizado con el seguimiento de sus comentarios y críticas, siendo la satisfacción de estos \emph{tester}s el principal indicador.
+
+Siguiendo la misma línea, los \glspl{txapeldun} han sido considerados la parte interesada más importante del proyecto. Este proceso de comunicación, de recolección de \emph{feedback}, ya se ha tratado más detalladamente en el \cref{sec:txapeldunes}.
+
+El \cref{sec:tech} también ha versado sobre los elementos tecnológicos que se han ido adquiriendo a lo largo de todo el proyecto, los ya han sido están debidamente detallados.
+
+\section{Gestión del alcance}
+
+Tal y como se ha mencionado anteriormente, el alcance del proyecto ha ido ampliándose a medida que este ha avanzado y como consecuencia del \emph{feedback} de los \emph{tester}s. El alcance del prototipo inicial, derivado de las historias de usuario planteadas en un inicio (ver \cref{sec:antecedentes-problema}) era el siguiente:
+
+\begin{itemize}
+  \item El registro de usuarios se realizará mediante un formulario de registro.
+  \item Petición de favores, indicando un texto corto y otro descriptivo más largo.
+  \item La visualización de las peticiones cercanas, y la posibilidad para responder a estas.
+  \item Las respuestas se limitarán a respuestas simples, sin más conversación.
+  \item La implementación se realizará solamente en formato \gls{webapp}, sin incluir otros clientes.
+\end{itemize}
+
+Tras el prototipo, y con el \emph{feedback} recibido de los primeros \glspl{txapeldun}, se amplió el alcance con las siguientes características:
+
+\begin{itemize}
+  \item Las peticiones se agruparán en categorías según su naturaleza. La lista se elaborará con las aportaciones de los usuarios.
+  \item Todas estas peticiones de favor caducarán pasado un tiempo, que por el momento estará prefijado en la aplicación.
+  \item Los usuarios podrán ver el perfil de otros usuarios, en el que se mostrará la actividad que estos tienen en Faborez.
+  \item La respuesta a las peticiones derivará en un hilo de mensajes tipo \emph{chat}.
+  \item Se desarrollará una \gls{app} para Android, que permita realizar todas las acciones nativamente, y que además reciba y muestre notificaciones sobre las peticiones cercanas. En el futuro serán solo los clientes móviles los únicos disponibles.
+\end{itemize}
+
+Después del segundo ciclo de recogida de comentarios se incluyeron en el alcance los siguientes puntos:
+
+\begin{itemize}
+  \item Faborez dispondrá de un sistema de reporte de mal uso, para denunciar peticiones de favor con contenido inadecuado.
+  \item Se añade el soporte multilingüe al cliente Android, con la traducción a Euskara.
+  \item Las notificaciones serán configurables, pudiendo activar o desactivar tanto el sonido como la vibración por separado.
+  \item Estos elementos de configuración se mostrarán en un apartado de ajustes dentro de la aplicación.
+\end{itemize}
+
+
+\section{Gestión del tiempo}
+
+Los siguientes son los hitos más significativos que han tenido lugar en el desarrollo del proyecto:
+
+\begin{description}
+  \item[5 de diciembre] Comienzo de la implementación.
+  \item[19 de diciembre] Publicación del primer prototipo funcional y adquisición de primeras aportaciones.
+  \item[21 de enero] Lanzamiento de la segunda versión con las mejoras y comienzo de la implementación del cliente Android.
+  \item[4 al 6 de febrero] Lanzamiento del cliente móvil y entrevistas con los \glspl{txapeldun} sobre el uso de este.
+  \item[16 de febrero] Alta de Faborez en Play Store.
+  \item[1 de abril] Recogida del último \emph{feedback} de los usuarios.
+  \item[25 de abril] Lanzamiento de la última versión dentro del alcance del proyecto, y fin de las tareas de implementación.
+  \item[5 de mayo] Finalización de la primera versión completa de la memoria del proyecto.
+  \item[12 de mayo] Depósito de la versión final de la memoria.
+\end{description}
+
+
+\section{Gestión de costes}
+
+Los costes económicos que el proyecto ha supuesto son despreciables respecto al volumen de trabajo, por lo que solamente se detallan, en horas, el coste humano que el proyecto ha supuesto (\cref{tab:costes-horarios}). Estas horas se dividen en dos categorías: por un lado, aquellas con un alto componente formativo y menos productivas por lo tanto, diferenciados mediante el texto \enquote{(for.)}; por otro, las actividades en las que ya se tenía experiencia, más productivas y que por tanto supondrían un mayor coste.
+
+\begin{table}
+  \centering
+  \begin{tabulary}{\textwidth}{L L S}
+    \toprule
+    {\bfseries Categoría} & {\bfseries Tarea} & {\bfseries Dedicación (\si{\hour})} \tabularnewline
+    \midrule
+    \multirow{3}{*}{Gestión del proyecto} & Adquisición de tecnologías y servicios & 20 \tabularnewline
+    & Reuniones de control & 25 \tabularnewline
+    & Gestión del alcance & 15 \tabularnewline
+    \midrule
+    \multirow{6}{*}{\Gls{backend}} & Diseño de la \gls{api} & 10 \tabularnewline
+    & Diseño y modificación del modelo de datos & 30 \tabularnewline
+    & Implementación & 30 \tabularnewline
+    & Implementación (for.) & 55 \tabularnewline
+    & Implementación de servidor OAuth (for.) & 25 \tabularnewline
+    & Corrección de errores & 20 \tabularnewline
+    \midrule
+    \multirow{4}{*}{Cliente Android} & Diseño gráfico de interfaz & 20 \tabularnewline
+    & Lógica de la interfaz (for.) & 60 \tabularnewline
+    & Capa de conexión al \gls{backend} (for.) & 20 \tabularnewline
+    & Corrección de errores & 20 \tabularnewline
+    \midrule
+    \multirow{3}{*}{Aplicación web} & Diseño de interfaces & 5 \tabularnewline
+    & Implementación de lógica & 10 \tabularnewline
+    & Correción de erores & 5 \tabularnewline
+    \midrule
+    \multirow{3}{*}{Gestión de \emph{feedback}} & Motivación y promoción & 15 \tabularnewline
+    & Preparación de cuestionarios & 5 \tabularnewline
+    & Entrevistas y síntesis de los comentarios & 12 \tabularnewline
+    \midrule
+    \multirow{2}{*}{Memoria} & Redacción & 45 \tabularnewline
+    & Aprendizaje de \LaTeX y Maquetación & 15 \tabularnewline
+    \bottomrule
+  \end{tabulary}
+  \caption{Tabla de dedicación horaria}
+  \label{tab:costes-horarios}
+\end{table}
+
+
+
+\end{document}

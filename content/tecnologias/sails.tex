@@ -1,0 +1,151 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\section[Backend: Sails.js]{Backend: \gls{sails}}
+\label{sec:tech-sails}
+
+Faborez se va a implementar como un servicio web, con clientes de varias plataformas, donde la gran mayoría de la lógica se encuentra en el servidor. Este debe soportar las siguientes características:
+
+\begin{itemize}
+  \item Compatibilidad con \gls{mongodb}, utilizado en el proyecto como anteriormente se menciona.
+  \item Facilidad para implementar \glspl{api} \gls{rest} que den como resultado objetos \gls{json}.
+  \item Soporte nativo o fácil de autenticación de clientes mediante sesiones para navegadores, y OAuth~2.0~\autocite{oauthrfc} para la aplicación móvil.
+  \item Baja latencia, que permita el envío instantáneo de notificaciones, además de poder soportar eventualmente un gran número de usuarios concurrentes.
+\end{itemize}
+
+Además, se han tenido en cuenta los siguientes aspectos deseables:
+
+\begin{itemize}
+  \item Que la tecnología sea \emph{libre}\footnote{El término \enquote{libre} se refiere al utilizado en \enquote{libre expresión} y no \enquote{barra libre}. Igualmente, en inglés se se utiliza \enquote{\emph{free as in freedom, not as in free beer}}.}, tanto para su uso como para leer y entender el código que se está utilizando.
+  \item La cantidad y claridad de la documentación que da la herramienta.
+  \item La cantidad de complementos o \emph{plugins} que se encuentran disponibles, para reutilizar código.
+  \item La comunidad de desarrolladores de la tecnología, que facilita encontrar documentación sobre resolución de errores comunes que cometen otras personas en sitios de terceros, fuera de la documentación oficial.
+\end{itemize}
+
+\subsection{Alternativas a la elección}
+
+A la fecha de la decisión, ya se tenía conocimiento y experiencia con otras plataformas, que han sido descartadas, que son Symfony y \gls{play}.
+
+\paragraph{Symfony}
+Está escrito en PHP, y cuenta con más de 2000 complementos~\autocite{knpbundles}, denominados \glspl{bundle}. No obstante, de la experiencia personal con este \gls{framework} se ha observado que su rigidez puede llegar a ser un problema a la hora de modificar parte del comportamiento de su base.
+
+\paragraph{\Gls{play}}
+Este \gls{framework} se encuentra escrito en el lenguaje de programación \gls{scala}~\autocite{whatscala}, un lenguaje de programación funcional, de tipado fuerte y basado en la máquina virtual de Java. \Gls{play}, en contra de de la anterior alternativa, indica en su web~\autocite{playframework} que da soporte a las características deseadas para este proyecto: REST y JSON, además de indicar estar optimizado para móviles. No obstante, y de nuevo motivado por la experiencia adquirida, se descarta esta tecnología por la falta de popularidad y por lo tanto de complementos existentes y que podrán ser necesarios en el desarrollo.
+
+\subsection{Tecnología escogida}
+
+La pila tecnológica escogida para este proyecto es \gls{sails}. Este es un \gls{framework} basado en \gls{node} que unifica una multitud de paquetes ya existentes, y establece unas jerarquía de carpetas y metodología de trabajo.
+
+Estos distintos módulos forman la pila que completa el funcionamiento de \gls{sails}, comenzando por el motor de \gls{node}, hasta el propio \gls{framework}\autocite{understandingexpress}. A continuación se explican detalladamente todas estas tecnologías, comenzando desde el más bajo nivel hasta las librerías de alto nivel, tal y como se muestra en la \cref{fig:sails-stack}.
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[auto]
+  \tikzset{
+    block/.style = {draw, rounded corners, fill=blue!20, align=center,
+    minimum height=1cm, text width=6cm, inner sep=0}
+  }
+  \node[block, fill=blue!15] (sails) {Sails.js};
+  \node[block, below=0.25cm of sails] (express) {Express.js};
+  \node[block, below=0.25cm of express, fill=blue!30] (connect) {Connect.js};
+  \node[block, below=0.25cm of connect, fill=green!30] (node) {Node.js};
+  \end{tikzpicture}
+  \caption[La pila de \gls*{sails}]{La pila de \gls{sails}}
+  \label{fig:sails-stack}
+\end{figure}
+
+\subsubsection[Node.js]{\Gls{node}}
+\Gls{node} es un entorno de programación para el desarrollo de aplicaciones de alto rendimiento en el lado del servidor en lenguaje JavaScript. Su código es de licencia libre, por lo que puede ser adaptado y redistribuido.
+
+El motor de interpretación de JavaScript de \gls{node} es \emph{V8}, desarrollado por Google, que se autodefine como un motor de alto rendimiento~\autocite{googlev8}.
+
+El sistema de entrada y salida de \gls{node} es del tipo asíncrono y orientada a eventos\autocite{understandingeventdriven}. Este tipo de arquitecturas están dirigidas a manejar un gran número de peticiones simultáneas y responder a estas de forma rápida, a la vez que tienen una pequeña huella de memoria y procesamiento.
+
+De cara al desarrollador, \gls{node} es una capa de abstracción en JavaScript que permite crear un servidor de red en este lenguaje y realizar todo tipo de operaciones. El fin más usual es el de servidor \gls{http}, pero también soporta otros protocolos como \gls{websockets}.
+
+\begin{listing}
+  \jsfile{codigo/node-helloworld.js}
+  \caption[\enquote{¡Hola, mundo!} en \gls*{node}]{\enquote{¡Hola, mundo!} en \gls{node}}
+  \label{lst:node-helloworld}
+\end{listing}
+
+El \cref{lst:node-helloworld} es un ejemplo muy simple de servidor \gls{http} que responde a todas las peticiones con el texto \enquote{¡Hola, mundo!}. Como se ve, el servidor es una función de JavaScript que recibe la petición y escribe su respuesta en el otro parámetro. Sin embargo, puede intuirse que es necesario lidiar con las especifidades del protocolo \gls{http}, como las cabeceras o los códigos numéricos de respuesta, para lo cual se han creado una serie de librerías y no tener que realizar estas tareas de bajo nivel.
+
+La comunidad ha colocado, con el paso del tiempo, como referentes a las librerías \gls{express} y su dependencia \gls{connect}\footnote{Paquetes de \gls{node} con más \emph{estrellas}: \url{https://www.npmjs.org/browse/star}}. Con funcionalidades distintas ambas se complementan entre ellas, tal y como se describe a continuación.
+
+\subsubsection[Connect.js]{\Gls{connect}}
+\Gls{connect} es un \gls{framework} que proporciona al desarrollador de \gls{node} un gran conjunto de pequeños módulos, llamados \gls{middleware}. Estos módulos añaden funcionalidad esencial a la hora de trabajar con el protocolo \gls{http}, entre otros:
+
+\begin{itemize}
+  \item Analizadores sintácticos para los datos que se envían mediante formularios y de los parámetros de la \gls{url}.
+  \item Utilidades para trabajar con \glspl{cookie}, así como sesiones de los usuarios.
+  \item \Gls{cache} a la hora de servir archivos estáticos.
+  \item Compresión de las respuestas \gls{http}.
+  \item Autenticación básica mediante el sistema integrado de \gls{http}.
+  \item Módulo para el registro de las peticiones recibidas.
+\end{itemize}
+
+\begin{listing}
+  \jsfile{codigo/connect-logging.js}
+  \caption{Ejemplo de registro con \gls{connect}}
+  \label{lst:connect-logging}
+\end{listing}
+
+El \cref{lst:connect-logging} muestra la implementación de un simple servidor que registra todas peticiones recibidas primero, y después se hace uso del \gls{middleware} \emph{query} para extraer el parámetro \enquote{nombre} y responder con este dato.
+
+Por lo tanto, estos \glspl{middleware} son funciones que se ejecutan en serie, y que pueden alterar la petición, añadir elementos al resultado o incluso interrumpir la cadena, por ejemplo en una autenticación fallida. El \cref{lst:connect-dummy} muestra cómo sería una función que no lleva a cabo ninguna tarea.
+
+\begin{listing}
+  \jsfile{codigo/connect-dummy.js}
+  \caption{\Gls{middleware} básico de \gls{connect}}
+  \label{lst:connect-dummy}
+\end{listing}
+
+
+\subsubsection[Express.js]{\Gls{express}}
+Los distintos módulos de \gls{connect} facilitan la implementación de la lógica de la aplicación, pero pueden quedarse cortos. Una característica común a todos los \glspl{framework} de desarrollo web es la posesión de un sistema de enrutamiento. El \cref{lst:connect-routing} muestra cómo puede simularse esta característica con los módulos revisados hasta ahora.
+
+\begin{listing}
+  \jsfile{codigo/connect-routing.js}
+  \captionof{listing}{Enrutamiento con \gls{connect}}
+  \label{lst:connect-routing}
+\end{listing}
+
+
+Se observan los siguientes inconvenientes, entre otros:
+\begin{enumerate}
+  \item Se repite código idéntico en cada una de las rutas, para comprobar si es la ruta correcta y ejecutando \texttt{next()} en caso contrario.
+  \item Debe existir una función final que actúe ante los errores 404.
+  \item Se deben establecer manualmente todas las cabeceras, incluso las del tipo de datos enviados.
+  \item Las rutas no discriminan según el \enquote{verbo} de \gls{http} utilizado.
+\end{enumerate}
+
+\Gls{express} es un \gls{microframework} que solventa los problemas anteriores y añade más funcionalidad y facilidades. El \cref{lst:express-routing} muestra cómo se implementaría la anterior aplicación con el uso de este \gls{framework}.
+
+\begin{listing}
+  \jsfile{codigo/express-routing.js}
+  \captionof{listing}{Enrutamiento con \gls{express}}
+  \label{lst:express-routing}
+\end{listing}
+
+Además de encapsular y reducir el código de cada caso de uso, ha añadido otras funcionalidades. Por un lado, los parámetros pueden encontrarse directamente en la ruta. Por otro, se añade la función \texttt{redirect()} a la respuesta, que permite realizar una redirección sin establecer las cabeceras manualmente.
+
+Resumiendo, \gls{express} implementa la lógica esencial de un servidor web sobre \gls{node}, pero debe dotársele a este de la estructura y funcionalidades necesarias para desarrollar una aplicación de tamaño considerable.
+
+\subsubsection[Sails.js]{\Gls{sails}}
+La mayoría de \glspl{framework} traen consigo una metodología y estructura de carpetas y ficheros ya definidas, que muchas veces es lo que los caracteriza de los demás. \Gls{express}, en cambio, en su formato de \gls{microframework}, no establece esta estructura y deja a la libertad del desarrollador la forma de utilización y de extensión con los módulos que fueran necesarios.
+
+Por lo tanto, resulta necesaria otra plataforma que fije esta estructura para que la aplicación siga manteniendo su modularidad a medida que aumenta su complejidad. Por otro lado, resulta indispensable una buena integración con la base de datos, característica que no se encuentra en las anteriores librerías.
+
+\Gls{sails} es el \gls{framework} elegido para este proyecto. Tiene como base \gls{express} y por lo tanto tiene disponibles todas funcionalidades de este. Las características añadidas son las siguientes:
+
+\begin{itemize}
+  \item Se separa la definición de las rutas de la lógica que cada una lleva asignada. Las rutas se especifican en un archivo de configuración. La lógica de negocio se divide en una jerarquía de controladores que contienen distintas acciones. Los controladores se corresponden generalmente con entidades de datos y las acciones contienen los distintos casos de uso posibles para estos.
+  \item La \gls{api} de acceso de datos es \emph{agnóstica}~\autocite{agnostic} respecto al sistema de gestión de bases de datos utilizado. Las entidades se definen mediante clases que describen sus atributos (nombre, tipo y restricciones) y métodos. La configuración de las conexiones a la base de datos se especifica en \textbf{ficheros de configuración} dedicados para ello.
+  \item La transformación de los datos necesarios en \gls{json} o \gls{html} es sencilla. En el primer caso basta con utilizar la función \texttt{res.json()}, dando como argumento el dato a enviar. Para \gls{html}, se utiliza la librería de plantillas \gls{ejs}, integrado en el \gls{framework}, y que especifica un directorio concreto donde estructurar estas plantillas.
+  \item Para cada ruta pueden integrarse \textbf{políticas de acceso personalizadas}. Estas políticas tienen el formato de \gls{middleware} anteriormente mencionado, las cuales realizan las comprobaciones oportunas para decidir si conceder el acceso o no.
+  \item Los archivos de configuración anteriormente mencionados son del formato \gls{json}, por lo que no es necesario programar ninguna lógica en ellos.
+\end{itemize}
+
+\end{document}

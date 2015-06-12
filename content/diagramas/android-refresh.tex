@@ -1,0 +1,52 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[auto]
+    \begin{umlseqdiag}
+      
+      \umlactor{Usuario}
+      \umlobject{NetworkClient}
+      \umldatabase{Preferencias}
+      \umlobject{Faborez}
+      
+      \begin{umlcall}{Usuario}{NetworkClient}
+      
+      \begin{umlcall}[op={peticiónDeRed()},return=token_error]{NetworkClient}{Faborez}
+      \end{umlcall}
+      
+      \begin{umlcall}[op=refresh_token,return=resultado]{NetworkClient}{Faborez}
+      \end{umlcall}
+      
+      \begin{umlfragment}[type=alt,label={nuevo \gls{token}},inner xsep=3]
+      
+      \begin{umlcall}[op={nuevo \gls{token}}]{NetworkClient}{Preferencias}
+      \end{umlcall}
+      
+      \begin{umlcall}[op={peticiónDeRed()},return=datos]{NetworkClient}{Faborez}
+      \end{umlcall}
+      
+      \begin{umlcall}[type=return,op=éxito]{NetworkClient}{Usuario}
+      \end{umlcall}
+      
+      \umlfpart[refresh_error]
+      
+      \begin{umlcall}[op={eliminar token}]{NetworkClient}{Preferencias}
+      \end{umlcall}
+      
+      \begin{umlcall}[type=return,op={login necesario}]{NetworkClient}{Usuario}
+      \end{umlcall}
+      
+      \end{umlfragment}
+
+      \end{umlcall}
+      
+    \end{umlseqdiag}
+  \end{tikzpicture}
+  \caption[Refresco de \glspl*{token} en el cliente Android]{Refresco de \glspl{token} en el cliente Android}
+  \label{fig:android-refresh}
+\end{figure}
+
+\end{document}

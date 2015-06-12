@@ -1,0 +1,34 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+  
+    \umlactor[x=0,y=0]{Usuario}
+    \umlactor[x=2,y=1.5]{Necesitado}
+    \umlactor[x=2,y=-1.5]{Ayudante}
+  
+    \umlusecase[x=4,y=4]{Pedir ayuda}
+    \umlusecase[x=5.5,y=3]{Aceptar respuesta}
+    \umlusecase[x=6,y=2]{Eliminar respuesta}
+    \umlusecase[x=6,y=-2]{Responder a petición}
+    \umlusecase[x=6,y=0]{Visualizar peticiones cercanas}
+    
+    \umlinherit{Necesitado}{Usuario}
+    \umlinherit{Ayudante}{Usuario}
+    
+    \umlassoc{Usuario}{usecase-5}
+    \umlassoc{Necesitado}{usecase-1}
+    \umlassoc{Necesitado}{usecase-2}
+    \umlassoc{Necesitado}{usecase-3}
+    \umlassoc{Ayudante}{usecase-4}
+  
+  \end{tikzpicture}
+  
+  \caption{Casos de uso en la primera fase}
+  \label{fig:casos-fase1}
+\end{figure}
+
+\end{document}

@@ -1,0 +1,67 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Arquitectura del servicio}
+\label{sec:arquitectura}
+
+Para entender el funcionamiento del servicio Faborez es necesario explicar la arquitectura de la solución final, identificando cada una de sus partes y la forma en la que estos interaccionan para funcionar. En la \cref{fig:arquitectura} se muestra de forma gráfica el conjunto del sistema.
+
+\subfile{content/diagramas/arquitectura}
+
+El servidor de la aplicación juega de punto central de la aplicación, que realiza la labor de almacenar los datos en la base de datos y ejecutar la lógica de la aplicación. A este se conectan los distintos clientes instalables mediante la api \gls{rest}, o directamente mediante un navegador a la \gls{webapp}.
+
+Este servidor se encuentra alojado en \gls{heroku}, que ejecuta el \gls{backend} y proporciona los servidores de \gls{mongodb} y \gls{redis}. Como se ha mencionado el \cref{sec:tech-heroku}, \gls{heroku} utiliza \gls{aws} como base.
+
+El \gls{backend} utiliza dos servicios de Google, Plus y \gls{gcm}, para la autenticación de usuarios y el envío de notificaciones a móviles respectivamente.
+
+En cuanto a los clientes, existen la aplicación web y la aplicación para Android. La primera está fuertemente ligada al \gls{backend}, en el sentido de que parte de su código sale del procesamiento de las plantillas del servidor. La lógica en el cliente está implementada mediante \gls{backbone} y \gls{marionette} para algunas páginas, en las cuales los datos son obtenidos del servidor utilizando la misma \gls{api} que utiliza el cliente Android.
+
+El cliente Android hace un uso completo de la \gls{api} \gls{rest} del servidor, del cual descarga todos los datos necesarios durante el funcionamiento, que no se almacenan permanentemente. El cliente Android recibe notificaciones a través de \gls{gcm}. Otra \gls{api} de Google utilizada es la de Maps, que le permite mostrar los mapas.
+
+En resumen, la arquitectura es del tipo \textbf{cliente--servidor}, en el cual el último tiene un peso mayor que los otros al tener este el estado general de los datos en cualquier momento. La comunicación es del tipo \gls{pull} en la mayoría de los casos: los clientes realizan las peticiones por iniciativa de estos. La excepción es el envío de notificaciones desde \gls{gcm} a los clientes Android, que se realiza mediante la estrategia \gls{push}.
+
+\section{Comunicación entre componentes}
+\label{sec:arquitectura-comunicacion}
+
+La comunicación entre los distintos componentes se realiza mediante los protocolos \gls{http} (mayoritariamente) y el proporcionado por \gls{gcm}. En el primer caso, la codificación de los datos se puede dar en los formatos \gls{html} o \gls{json}.
+
+Los datos codificados en formato \gls{json} tienen la estructura que se muestra en el \cref{lst:request-json}. Se envían todos los datos relativos a la clase, y se embeben también los objetos ligados a estos, en este caso el usuario que envió la petición y la categoría. Eso último permite simplificar la implementación de los clientes y reducir significativamente el número de peticiones al servidor.
+
+\begin{listing}
+  \jsonfile{codigo/request.json}
+  \caption[Petición de favor codificada en formato \acrshort*{json}]{Petición de favor codificada en formato \gls{json}}
+  \label{lst:request-json}
+\end{listing}
+
+La transferencia de datos mediante \gls{gcm} es distinta, ya contiene algunas restricciones en cuanto al tipo y la cantidad de datos que se pueden enviar~\autocite{gcm-payload}. Por un lado, el total de los datos no debe superar los \SI{4}{\kibi\byte}, y por el otro no es posible enviar tipos de datos complejos, deben ser solamente tipos de datos simples.
+
+Por lo tanto, el \gls{backend} de Faborez opta por la estrategia de indicar al dispositivo el tipo del contenido que se ha creado junto con su identificador, en la forma que muestra el \cref{lst:gcm-payload}. Así, el cliente conoce con exactitud la \gls{url} de los datos que debe descargar y actuar posteriormente.
+
+\begin{listing}
+  \jsonfile{codigo/gcm-payload.json}
+  \caption[Mensaje de \acrshort*{gcm} con \emph{payload} incrustado]{Mensaje de \gls{gcm} con \emph{payload} incrustado}
+  \label{lst:gcm-payload}
+\end{listing}
+
+\section{Alertas de peticiones}
+Cuando un usuario realiza una petición, se realiza un procedimiento que implica a varias partes de la arquitectura. El \gls{backend} filtra a los dispositivos utilizando las coordenadas de la petición, envía a \gls{gcm} sus identificadores y el identificador de la petición, y este servicio es el encargado de realizar las notificaciones mediante el método \gls{push}. En la \cref{fig:alertas-peticiones} se ve de forma gráfica el flujo de los datos.
+
+\subfile{content/diagramas/alertas-peticiones}
+
+\section{Autenticación de usuarios}
+\label{sec:arquitectura-autenticación}
+
+Faborez no implementa un sistema propio para la autenticación de sus usuarios. Es decir, no se guardan credenciales de acceso que luego el usuario utiliza para identificarse, sino que se delega esta tarea en el servicio externo Google+. Existen alternativas como Twitter, Facebook o incluso Github, pero se ha optado por primar la homogeneidad de los servicios externos utilizados.
+
+Este servicio se basa en el protocolo OAuth~2.0, en el cual Faborez toma el rol de cliente~\autocite[sec.~1.1]{oauthrfc}. Primero, Faborez redirige al usuario a una pantalla dentro de Google en la que se le muestran los permisos solicitados\footnote{Faborez solicita los permisos para acceder a la información básica (nombre y avatar) y la dirección de correo electrónico.} y podrá conceder el acceso. Este acceso se materializa en un \textbf{\gls{token} de autenticación} que es transferido a Faborez. A continuación, el \gls{backend} canjea este \gls{token} de autenticación por un \textbf{\gls{token} de acceso}, con el que ya puede descargar la información solicitada previamente.
+
+El proceso en los clientes web y Android es similar en cuanto a los pasos. La diferencia está en que, en el cliente web, el flujo del proceso se controla con redirecciones \gls{http}, mientras que el cliente Android hace uso de la librería \emph{Google Play Services}. En la \cref{fig:google-login} se muestra este proceso de forma gráfica.
+
+\subfile{content/diagramas/oauth-login}
+
+El cliente web recibiría como resultado una \gls{cookie} con la información de la sesión, pero en el cliente Android, en cambio recibe unos \glspl{token} de acceso y de refresco creados por el \gls{backend} de Faborez. De esta manera, se forma otro conjunto Oauth, en el que el \gls{backend} pasa a ser el \emph{resource owner} y la aplicación el cliente. Para el posterior refresco, se produce el flujo de la \cref{fig:android-refresh}.
+
+\subfile{content/diagramas/android-refresh}
+
+\end{document}

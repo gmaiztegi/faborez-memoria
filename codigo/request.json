@@ -1,0 +1,24 @@
+{
+  "title":"Un paraguas.",
+  "description":"Paraguas para no mojarme.",
+  "latitude":43.3164306,
+  "longitude":-1.984446,
+  "categoryId":"52ffb6e789969d0b004d4886",
+  "expiresAt":"2014-03-03T17:06:23.389Z",
+  "userId":"52b2d7664ebade0b00c2063f",
+  "createdAt":"2014-03-02T17:06:23.389Z",
+  "updatedAt":"2014-03-02T17:06:23.390Z",
+  "id":"5313650f36dc1d0b009f2bbf",
+  "user":{
+    "name":"Goiatz Irazabal",
+    "email":"goiatz@irazabal.com",
+    "createdAt":"2013-12-19T11:24:22.732Z",
+    "id":"52b2d7664ebade0b00c2063f",
+    "avatarUrl":"http://www.gravatar.com/avatar/dae2f01bdbd0612247c398ecbf854aba?s=128"
+  },
+  "category":{
+    "title":"Prestar objeto",
+    "id":"52ffb6e789969d0b004d4886"
+  },
+  "status":"expired"
+}

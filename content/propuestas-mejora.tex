@@ -1,0 +1,51 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Propuestas de mejora}
+
+Faborez ha sido un proyecto que desde su inicio ha ido evolucionando y al que se le han ido añadiendo distintas mejoras. No obstante, el proyecto, como trabajo académico, ha tenido que llegar a su final, y en este cierre se han tenido que dejar de lado muchas de las ideas de mejora que se han ido acumulando.
+
+El listado a continuación reúne una relación de propuestas de mejora, que han sido recogidas y procesadas de entre todas las ideas aportadas por los \emph{betatester}s, además de otras de origen propio que han ido surgiendo con el desarrollo, para que sirvan como propuesta para dar continuidad al trabajo presentado en esta memoria.
+
+\begin{enumerate}
+  \item Un sistema por el cual el usuario pueda gestionar la caducidad de sus peticiones. Por ejemplo, se mostraría una notificación al usuario en su móvil informándole de la próxima caducidad de su petición. El usuario puede entonces reenviar la petición para intentar lograr alguna respuesta.
+  
+  \item De la misma forma, puede que el usuario, después de hacer una petición, se mueva significativamente del lugar. En este caso también, la aplicación podría mostrar una notificación explicando la situación y ofreciendo la posibilidad de recolocar la petición. Igualmente, otra posibilidad sería eliminar la petición si esta ya hubiera perdido su validez con el movimiento.
+  
+  \item En un escenario ideal, en el cual la gran mayoría de personas de una zona tuvieran instalado Faborez en sus móviles y realizaran peticiones regularmente, la cantidad de notificaciones que los usuarios pueden recibir puede ser inmenso, por lo que se requiere algún tipo de procedimiento para priorizar y filtrar las peticiones que se le aparecen a un usuario.
+  
+  Existirá un número máximo de peticiones que pueden mostrársele en un preciso momento. Si hubiera menos peticiones que este número se mostrarán todas, pero si hubiera más estas serían priorizadas en base a los siguientes criterios:
+  \begin{enumerate}
+    \item Periodo de tiempo hasta la caducidad.
+    \item Distancia desde el usuario hasta la petición.
+    \item Relación con la persona que ha realizado la petición, si es un contacto conocido o no.
+    \item Categoría de la petición.
+    \item Karma del usuario que hace la petición.
+  \end{enumerate}
+  
+  Estos criterios serían configurables por el usuario, pudiendo este ordenarlos según sus preferencias. Las categorías que se mencionaban también serían priorizadas de la misma forma.
+  
+  \item Debido a la característica de cercanía, puede ocurrir que un usuario que no se encuentre lo suficientemente cerca de un núcleo significativo de usuarios perciba una sensación de soledad, que si la petición de otros se realizara a poca distancia no se daría.
+  
+  Por lo tanto, se ha propuesto como mejora un apartado que permita visualizar las zonas calientes en cuanto a peticiones de favores en la cercanía. Así el usuario sabe dónde se realizan más peticiones para realizarlas ahí, o para moverse y simplemente ayudar al resto de usuarios.
+  
+  \item En la implementación actual, el cálculo de las distancias se realiza mediante una aproximación simplificada. La fórmula calcula que el usuario se encuentre en un rango de coordenadas de amplitud constante. Esta decisión se debe a haber premiado simplificar la función de búsqueda a la base de datos con miedo a que un procedimiento más exacto supusiera un perjuicio al rendimiento.
+  
+  Aunque esta aproximación funciona bien en la localización geográfica de Donostia y un error en la distancia no sería crítico, en latitudes muy distintas resultaría necesario revisar esta fórmula. Como se ha utilizado \gls{mongodb} como base de datos, este ya dispone de una función de búsqueda mediante coordenadas y solo se necesitaría analizar el modo de integrar esta búsqueda en el framework \gls{sails}.
+  
+  \item Es posible que los dos campos de texto que Faborez ofrece para realizar la petición no sean suficientes para describir la petición de favor y que estos necesiten de acompañamiento contenido multimedia. Se propone por lo tanto que a las peticiones se les pueda adjuntar una fotografía, que acompañe a la explicación textual.
+  
+  \item Una vez fuera realizada la integración entre Faborez y el servicio de Karma (ver \cref{sec:karma}), los usuarios con mayor karma podrían tener una serie de ventajas a la hora de pedir favores. Pedirlas a una distancia mayor o que tuvieran una duración mayor, son algunos ejemplos.
+  
+  \item Actualmente, los reportes de uso indebido tan solo se almacenan en la base de datos y el administrador debe acceder manualmente para revisarlos y actuar en consecuencia. Convendría que existiera un gestor de estos reportes, que fácilmente se pudiera visualizar la información relativa a la petición y una galería de acciones que se pueden realizar. Además, el los administradores deberían recibir notificaciones automáticas cuando se produzcan estos reportes, ya sea mediante correo electrónico o incluso dentro de la propia aplicación.
+  
+  \item Para no limitarse al \emph{feedback} recibido por los medios habilitados en este proyecto, la aplicación podría incluir un apartado en el que enviar al desarrollador sugerencias, o reportar fallos que se hubieran encontrado.
+  
+  \item En la actual arquitectura de la aplicación (ver \cref{sec:arquitectura,sec:android-datamodel}), todos los datos se almacenan de forma permanente únicamente en el \gls{backend}. Esta es una decisión de diseño con implicaciones, por ejemplo, en cuanto a la gestión de datos de carácter personal. De cara al cumplimiento de la \gls{lopd}, convendría revisar si esta centralización es adecuada o algunos de los datos deben permanecer tan solo en los clientes.
+  
+  \item Con la finalidad de que potenciales usuarios con alguna discapacidad pudieran usar Faborez, se deberían estudiar las formas más adecuadas de funcionamiento. Por ejemplo, las peticiones podrían realizarse mediante utilizando solamente la voz. 
+  
+\end{enumerate}
+
+\end{document}

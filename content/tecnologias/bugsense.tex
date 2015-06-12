@@ -1,0 +1,42 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\section[Bugsense]{Feedback de errores automático con Bugsense}
+
+El desarrollo de aplicaciones para Android es casi idéntico al de desarrollar un programa que se vaya a ejecutar en el propio ordenador. La diferencia está en que el entorno de desarrollo compila y empaqueta la aplicación, la instala en un dispositivo Android simulado o uno real conectado por USB y lo ejecuta.
+
+Mediante esta conexión USB es posible realizar todas las tareas de depuración que se podrían realizar en una aplicación de PC: revisar la ejecución con interrupciones, vigilar la memoria consumida, pero lo más importante es trazar los errores a las líneas de código exactas donde se producen, para proceder al arreglo.
+
+No obstante, no siempre es posible detectar todos los potenciales focos de errores durante el desarrollo, y es probable que una aplicación se publique con errores. Los usuarios detectarían estos errores porque la aplicación se cerraría con una alerta, pero el mensaje de error no llegaría al desarrollador.
+
+Es por ello que es necesario crear un sistema por el cual, sin depender de la voluntad o conocimiento de los usuarios, se recojan de manera automática y ordenada estos informes de errores. A continuación se repasan las posibles soluciones a esta necesidad, la escogida para llevar adelante este proyecto, la forma de integración en la aplicación y el método de funcionamiento para el trabajo con el servicio.
+
+\subsection{Alternativas disponibles}
+
+Google proporciona su propio sistema de reporte de errores integrado en Google Play. Si una aplicación ha sido instalada a través de su plataforma, en el momento del error se muestra un mensaje de alerta que ofrece dos opciones: aceptar para cerrar sin realizar ninguna acción, o reportar el informe de error.
+
+No obstante, pocos usuarios reportan el fallo, por la sensación de pérdida de privacidad que supone (se debe enviar una importante cantidad de información sobre el dispositivo) o por pura incomodidad de seguir los pasos.
+
+Por los inconvenientes anteriores, se decidió analizar y pasar a utilizar un servicio alternativo no dependiente de Play Store. Existen numerosas opciones por Internet, fácilmente localizables por Google. Sin embargo, por la falta de conocimiento sobre el tema y las alternativas disponibles, una rápida comparación llevó a la elección: Bugsense. Las características eran similares entre unos y otros servicios, pero este dispone de un plan básico totalmente gratuito, apropiado para este proyecto.
+
+\subsection{Integración}
+
+Bugsense se integra con la aplicación mediante dos sencillos pasos. Por un lado, se debe instalar una librería de Java que la propia empresa facilita para ser descargada (o mediante un repositorio \gls{maven}). Después, se debe añadir una línea de código en el arranque del programa, que tiene como único parámetro un \gls{token} que identifica al desarrollador dentro de Bugsense.
+
+De esta forma cuando la aplicación se cierra por un error, se guarda el informe antes del cierre, y este es enviado de forma automática cuando la aplicación vuelva a abrirse y exista una conexión a Internet activa. No es necesario ningún tipo de intervención por parte del usuario.
+
+\subsection{Método de funcionamiento}
+Los informes de errores recibidos se almacenan y se muestran al desarrollador, con la siguiente información, entre otros:
+
+\begin{itemize}
+    \item La traza del error, con los archivos y número de línea dentro del código donde se han producido los errores.
+    \item Toda la información del dispositivo: el modelo de móvil, la versión del sistema operativo Android, la cantidad de memoria RAM y otros datos relativos al estado, como las conexiones a Internet disponibles y la disponibilidad de la localización.
+    \item Datos sobre la configuración del dispositivo, como el idioma establecido en el sistema operativo, o la cuenta de usuario activa en la aplicación, que el desarrollador debe encargarse de establecer en el propio programa.
+\end{itemize}
+
+Como la cantidad de errores que pueden recibirse para un mismo fallo puede ser grande, dependiendo del número de usuarios, estos se agrupan para la comodidad, y se muestran estadísticas relativas a los datos anteriores.
+
+El método de funcionamiento con estos informes de errores es muy similar al trabajo con un sistema de \emph{tickets} de soporte. El desarrollador debe corregir el fallo y después indicarlo en Bugsense, junto con la versión que lo arregla, para llevar un histórico. De esta manera, puede ignorar los informes de versiones en los cuales es conocido el error, o mostrar una alerta si se vuelve a repetir la incidencia en una versión posterior.
+
+\end{document}

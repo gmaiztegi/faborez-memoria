@@ -1,0 +1,88 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\section[Proveedor IaaS: Heroku]{Proveedor \gls{paas}: \gls{heroku}}
+\label{sec:tech-heroku}
+
+El \gls{backend} desarrollado para Faborez debe estar disponible a la red constantemente para que el servicio se encuentre en marcha y los distintos clientes puedan conectarse a este. Existen multitud de proveedores que ofrecen servicios de distinto tipo según las necesidades de cada proyecto.
+
+A continuación se explican la forma en la que los distintos proveedores pueden ser categorizados según su filosofía, las distintas características de cada categoría, algunos ejemplos de proveedores y las características básicas del proveedor escogido.
+
+\subsection{Categorías de proveedores}
+
+Los proveedores de servicios en la nube pueden ser clasificados en tres grandes categorías, según si el servicio ofrecido es de más \enquote{bajo} o \enquote{alto} nivel. En ese orden, las categorías son \acrfull{iaas}, \acrfull{paas} y \acrfull{saas}.
+
+\subsubsection[\Acrshort*{iaas}]{\Acrlong{iaas}}
+Estos servicios ofrecen una infraestructura sobre la que construir la arquitectura de nuestra aplicación. El proveedor pone a disposición del cliente una instancia de un sistema operativo (normalmente virtualizado). Así, el desarrollador tiene un control total sobre esta instancia, y es su responsabilidad poner en marcha en él los distintos servicios que le hagan falta.
+
+Un mismo proveedor suele categorizar las distintas opciones según el rendimiento de las instancias virtualizadas. Es decir, el servidor tendrá un coste mayor en cuanta más capacidad tenga este en términos de CPU, memoria RAM y tamaño del disco duro.
+
+Uno de los proveedores más conocidos es \gls{aws}\footnote{\url{https://aws.amazon.com/es/}}, que tiene disponibles instancias en centros de proceso de datos a lo ancho de todo el mundo. Otras alternativas conocidas son Joyent\footnote{\url{https://www.joyent.com/}} o Rackspace\footnote{\url{http://www.rackspace.com/es/}}.  El \cref{tab:iaas} muestra una comparación de estos servicios y su precio, con características similares y de una gama media-baja.
+
+\begin{table}
+  \centering
+  \begin{tabulary}{\textwidth}{L L L}
+    \toprule
+    \textbf{Proveedor} & \textbf{Características} & \textbf{Precio mensual} \tabularnewline
+    \midrule
+    Amazon AWS & 1~vCPU, \SI{160}{\giga\byte} de disco y \SI{1,7}{\gibi\byte} de RAM & \USD{31.68} \tabularnewline
+    %\midrule
+    Joyent & 1~vCPU, \SI{56}{\gibi\byte} de disco y \SI{1,75}{\gibi\byte} de RAM & \USD{40.32} \tabularnewline
+    %\midrule
+    Rackspace & 1~vCPU, \SI{20}{\gibi\byte} de disco y \SI{1}{\gibi\byte} de RAM & \USD{29.20} \tabularnewline
+    \bottomrule
+  \end{tabulary}
+  \caption[Comparativa de servicios \Acrshort*{iaas}]{Comparativa de servicios \gls{iaas}}
+  \label{tab:iaas}
+\end{table}
+
+
+\subsubsection[\Acrshort*{paas}]{\Acrlong{paas}}
+Esta categoría de servicios, en vez de poner a disposición un sistema operativo completo sobre el que se  tiene total control, el desarrollador tiene un servidor preinstalado capaz de ejecutar aplicaciones web de una determinada pila tecnológica.
+
+Los clásicos hostings de \gls{apache}+PHP+\gls{mysql} sobre los que se ejecutan la mayoría de webs personales y profesionales encajan en esta categoría. No obstante, el número de plataformas que se utilizan se ha diversificado y lo mismo ha ocurrido con los proveedores~\autocite{paas-growth}. Existen proveedores para Java Servlets, Ruby on Rails, o \gls{node}, plataforma en la que se basa Faborez.
+
+Existen proveedores de esta categoría que tienen una tarifa gratuita, para proyectos pequeños o que están comenzando a ponerse en marcha. A partir de ahí, las tarifas escalan de forma similar a los servicios \gls{iaas}, aumentando en prestaciones, pero también añadiendo características al servidor\footnote{Addons de Heroku: \url{https://addons.heroku.com/}}.
+
+Google App Engine, Windows Azure, Heroku, CloudBees o Cloud Foundry son algunas de las alternativas existentes en esta categoría. En el \cref{tab:paas} se muestran las tecnologías con las que funcionan y si disponen de versión gratuita.
+
+\begin{table}
+  \centering
+  \begin{tabulary}{\textwidth}{L L L}
+    \toprule
+    \textbf{Proveedor} & \textbf{Tecnologías soportadas} & \textbf{Tarifa gratuita} \tabularnewline
+    \midrule
+    Google App Engine & Python, Java, Go y PHP & Sí, con cuotas \tabularnewline
+    Heroku & Java, Scala, Python, Node.js, Ruby y Clojure & Sí, una instancia \tabularnewline
+    Windows Azure & .NET, PHP, Node.js y Python & Sí, con limitaciones \tabularnewline
+    Cloudbees & Java & Sí \tabularnewline
+    Cloud Foundry & Java, Python y Node.js & \emph{Según proveedor} \tabularnewline
+    \bottomrule
+  \end{tabulary}
+  \caption[Comparativa de servicios \acrshort*{paas}]{Comparativa de servicios \gls{paas}}
+  \label{tab:paas}
+\end{table}
+
+
+\subsubsection[\Acrshort{saas}]{\Acrlong{saas}}
+Aunque generalmente no se les suele etiquetar con este nombre, estas son las conocidas aplicaciones en la nube, contrapuestas a las aplicaciones de escritorio. Gmail, Hotmail, Dropbox o Evernote son algunos de los ejemplos más conocidos de los muchos existentes.
+
+No obstante, estas aplicaciones en la nube quedan en el nivel del usuario y no son herramientas para desarrolladores de aplicaciones, por lo que su análisis queda fuera de este proyecto.
+
+\subsection{Proveedor escogido}
+
+De entre las alternativas anteriores, el proveedor seleccionado para este proyecto ha sido Heroku. Su servicio se basa en la infraestructura de \gls{aws}, y soporta \gls{node} entre una de sus plataformas de desarrollo, y por otro lado no tiene tiene coste económico alguno utilizando una sola instancia, crucial para este proyecto. Por otro lado, también tiene algunas otras características:
+
+\begin{itemize}
+  \item Entre los \emph{addon}s disponibles se encuentran dos que han sido utilizados en el proyecto: \gls{mongodb} y \gls{redis}. El primero ya se ha explicado anteriormente en el \cref{sec:tech-mongodb}, y el segundo es un motor de base de datos en memoria, que en el caso de este proyecto almacena los datos de sesión de los usuarios.
+  \item La creación de una instancia en el servidor es trivial, pero también lo es el proceso de despliegue de nuevas versiones de la aplicación. Este se realiza mediante \gls{git}, siendo suficiente un comando para subir nuevas versiones:
+  \begin{minted}{bash}
+    git push heroku master
+  \end{minted}
+  \item \Gls{heroku} permite alojar la aplicación en un dominio propio sin incurrir en gastos, característica que es de pago en los demás proveedores. No obstante, se ofrece un subdominio\footnote{En el caso de Faborez, es \url{http://stark-scrubland-5936.herokuapp.com/}} predefinido por si no se contara con un dominio, el cual tiene activado por defecto SSL.
+\end{itemize}
+
+Las razones anteriores, añadidas a la experiencia previa ya existente con el proveedor, han llevado a escoger este servicio para alojar Faborez.
+
+\end{document}

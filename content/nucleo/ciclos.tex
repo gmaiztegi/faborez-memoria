@@ -1,0 +1,30 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Fases del desarrollo}
+
+% todo Borrar esta fase y llevarlo a gestión del alcance
+
+Como se ha mencionado en el anterior capítulo, el desarrollo de este proyecto se ha realizado integrando a los propios usuarios en su concepción y con un \emph{feedback} continuo. Por ello, no ha existido un diseño cerrado del producto a desarrollar.
+
+Estos cambios se han reflejado tanto en la funcionalidad del producto, que ha ido progresivamente aumentando, como en la arquitectura que da forma a las distintas partes. Estos cambios se encuentran, de esta forma, debidamente detallados y justificados.
+
+Las siguientes secciones desarrollan el progreso seguido por el producto en este periodo, los cambios significativos comparados con la fase anterior, y los cambios de la arquitectura de la aplicación en este proceso.
+
+\subsection{Prototipado y primera versión}
+
+La primera fase del proyecto ha sido la del prototipo, que tenía como objetivo desarrollar rápidamente un mínimo funcional, que pueda recibir de inmediato \emph{feedback} de los primeros usuarios y validar así la idea, siguiendo la filosofía del \emph{Minimum Viable Product}\autocite{leanstartup}.
+
+En esta primera versión se realizó el \gls{backend} que da soporte al modelo de datos básico de la aplicación (\cref{fig:clases-fase1}) y la lógica esencial de funcionamiento (\cref{fig:casos-fase1}).
+
+Al requerir un prototipo funcional rápidamente, se descartó la implementación de un cliente específico para el móvil, y se optó por un solo frontend en forma de página web, utilizando las tecnologías mencionadas en el capítulo anterior, \gls{backbone} (\cref{sec:tech-backbone}) y \gls{bootstrap} (\cref{sec:tech-bootstrap}) para el \gls{frontend}, y \gls{sails} (\cref{sec:tech-sails}) para el \gls{backend}.
+
+\subfile{content/diagramas/clases-fase1}
+\subfile{content/diagramas/casos-fase1}
+
+Tras haber escogido el nombre para la aplicación, Faborez, se compró inmediatamente el dominio \url{http://faborez.net/} donde sería colgada a aplicación web, a la vez que se protege el nombre de dominio ante posibles ladrones.
+
+El despliegue de la aplicación se realizó en el proveedor de \gls{paas} que se ha mantenido durante todo el desarrollo del proyecto: \gls{heroku} (\cref{sec:tech-heroku}). Enlazando este dominio con el proveedor, la aplicación estaba disponible ante el usuario.
+
+\end{document}

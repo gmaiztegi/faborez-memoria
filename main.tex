@@ -1,0 +1,73 @@
+\documentclass[spanish]{style/pfc}
+
+\usepackage{subfiles}
+
+\EUROADD{USD}{\$}{1.38}
+\newcommand*\USD{\EURO{USD}}
+
+\subject{Proyecto Fin de Carrera}
+\title{Faborez}
+\subtitle{App social de petición de favores instantáneos}
+\author{Gorka Maiztegi Etxeberria}
+\date{12 de mayo de 2014}
+\publishers{%
+Director: \\ José Miguel Blanco Arbe
+\vfill%
+\includegraphics[width=0.5\columnwidth]{style/images/logo-ehu}%
+}
+
+\addtokomafont{dedication}{\normalsize}
+\subfile{content/agradecimientos}
+
+\lowertitleback{%
+\includegraphics[height=3em]{images/by-sa} \hspace{3pt}
+\raisebox{1em}{Gorka Maiztegi Etxeberria, 2014}
+\vspace{0.5em}
+
+\copyright 2014 por Gorka Maiztegi Etxeberria (\url{http://gorkamaiztegi.net/}). Faborez, App social de petición de favores instantáneos.
+
+Esta obra está sujeta a la licencia Reconocimiento-CompartirIgual 4.0 Internacional de Creative Commons. Para ver una copia de esta licencia, visite \url{http://creativecommons.org/licenses/by-sa/4.0/}. El reconocimiento se realizará adjuntando el enlace la web del autor a su nombre y apellidos.
+}
+
+\addtocounter{tocdepth}{-1}
+
+\addbibresource{content/bibliografia/bibliografia.bib}
+
+\makeglossaries
+\loadglsentries{content/glosario.tex}
+
+%\makeindex
+
+\begin{document}
+
+\maketitle
+
+\subfile{content/abstract}
+
+\cleardoublepage
+\tableofcontents
+\listoffigures
+\listoftables
+\listoflistings
+
+\subfile{content/introduccion}
+\subfile{content/antecedentes/problema}
+\subfile{content/antecedentes/tecnologias}
+%\subfile{content/nucleo}
+\subfile{content/nucleo/txapeldunes}
+%\subfile{content/nucleo/ciclos}
+\subfile{content/nucleo/arquitectura}
+\subfile{content/arquitectura/backend}
+\subfile{content/arquitectura/android}
+\subfile{content/arquitectura/webapp}
+\subfile{content/gestion}
+\subfile{content/conclusiones}
+\subfile{content/propuestas-mejora}
+
+\subfile{content/bibliografia}
+
+\printglossaries
+
+\subfile{content/anexos}
+
+\end{document}

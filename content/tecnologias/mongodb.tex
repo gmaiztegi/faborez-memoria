@@ -1,0 +1,30 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\section[Base de datos: MongoDB]{Base de datos: \gls{mongodb}}
+\label{sec:tech-mongodb}
+
+Las bases de datos relacionales se han establecido desde hace décadas como el referente de almacenamiento de datos para las aplicaciones. Los sistemas basados en \gls{sql} poseen las características necesarias para usos como las transacciones bancarias: \emph{atomicidad}, \emph{consistencia}, \emph{aislamiento} y \emph{durabilidad}.
+
+Los datos, a su vez, se almacenan en un modelo tabular que se compone de múltiples filas que a su vez contienen un número de atributos definidos. Esto da lugar a todo el \emph{álgebra relacional}.
+
+No obstante, el modelo relacional puede resultar no ser adecuado para algunos tipos de uso, a saber: modelos de datos en árbol o grafos, tuplas con número variable de atributos o almacenamiento de datos en clave-valor.
+
+%\subsection[Alternativa a SQL]{Alternativa a \gls{sql}}
+
+Las bases de datos \gls{nosql} se han popularizado en los últimos años como alternativa a las bases de datos relacionales. Entre los motivos están la simplificación del diseño, la mejora de la escalabilidad o la búsqueda de adaptar la base datos al modelo de datos necesario.
+
+Por otra parte, estos sistemas generalmente carecen de un lenguaje estándar como \gls{sql} y priorizan la disponibilidad sobre la consistencia.
+
+Los principales usuarios de estas bases de datos no relacionales son aquellas aplicaciones de tiempo real o que manejan gran cantidad de datos no estructurados en tablas.
+
+\subsection{Elección}
+
+El proyecto no tiene, \emph{a priori}, ninguna restricción fuerte en cuanto al sistema de almacenamiento. La complejidad del modelo de datos es pequeña y las operaciones pueden permitirse perder consistencia en favor de una mayor rendimiento.
+
+Se escoge una base de datos \gls{nosql} para el almacenamiento de datos. Más concretamente, se hará uso de \gls{mongodb}, tecnología popular y de \emph{software} libre, y que además es la opción de referncia en otros proyectos basados en la geolocalización~\autocite{ibaivalencia}.
+
+A falta de comparativas exhaustivas de rendimiento en la red, se ha seguido el criterio de la popularidad y del tamaño de la comunidad de desarrolladores~\autocite{whymongodb}. Tal y como su web indica~\autocite{mongodb}, es la base de datos no relacional más popular, y la plataforma que se utilizará para el servidor lo soporta mediante numerosas extensiones disponibles\footnote{Paquetes de \gls{node} relativos a \gls{mongodb}: \url{https://www.npmjs.org/search?q=mongo}}.
+
+\end{document}
