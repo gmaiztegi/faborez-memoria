@@ -129,5 +129,6 @@ sympy-plots-for-*.tex/
 # Others
 *.auxlock
 .tpbuild
-figures/
+figures/*
+!figures/.gitkeep
 main.pdf
